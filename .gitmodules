@@ -1,0 +1,4 @@
+[submodule "hexoThemeKacper"]
+	path = themes/hexoThemeKacper
+	url = https://github.com/jaywcjlove/hexoThemeKacper.git
+	branch = master
