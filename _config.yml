@@ -7,13 +7,13 @@ title: s-infinite-box
 subtitle: ''
 description: ''
 keywords:
-author: Songwz
+author: SongMingHe
 language: cn
 timezone: 'Asia/Shanghai'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://s-infinite-box.github.io/songminghe
+url: https://s-infinite-box.github.io/SongMingHe
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
