@@ -21,7 +21,8 @@ export default defineConfig({
   },
   server: {
     // 监听地址 0.0.0.0
-    host: true
+    host: true,
+    base: './',
   },
   build: {
     // outDir: '/SongMingHe/',

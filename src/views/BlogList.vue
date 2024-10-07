@@ -4,8 +4,8 @@ import BlogPages from '../assets/pages/blogPages.json?raw'
 import { ref } from 'vue'
 
 const orginalList = JSON.parse(BlogPages)
-let mdList = ref(orginalList)
-let displayFlag = ref(false)
+const mdList = ref(orginalList)
+const displayFlag = ref(false)
 </script>
 
 <template>
