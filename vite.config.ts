@@ -8,7 +8,7 @@ import build from './build'
 
 build()
 
-// https://vitejs.dev/config/
+// https://cn.vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
@@ -22,5 +22,9 @@ export default defineConfig({
   server: {
     // 监听地址 0.0.0.0
     host: true
+  },
+  build: {
+    // outDir: '/SongMingHe/',
+    // emptyOutDir: true,
   }
 })
