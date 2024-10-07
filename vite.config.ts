@@ -24,7 +24,7 @@ export default defineConfig({
     host: true,
   },
   // https://cn.vite.dev/config/shared-options.html#base
-  base: 'https://s-infinite-box.github.io/SongMingHe/',
+  base: '/SongMingHe/',
   build: {
     // outDir: '/SongMingHe/',
     // emptyOutDir: true,
