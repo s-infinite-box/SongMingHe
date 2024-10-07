@@ -7,13 +7,14 @@ import { RouterLink, RouterView } from 'vue-router'
   <div class="container">
     <div class="container-left">
       <div style="margin: 20px; text-align: center">
-        <a href="/">
-          <img
-            src="@/assets/IMG_20181124_155151.jpg"
-            style="height: 175px; width: 175px; border-radius: 50%"
-            alt="img"
-          />
-        </a>
+<!--        <a href="/">-->
+        <RouterLink to="/blogList"><img
+          src="@/assets/IMG_20181124_155151.jpg"
+          style="height: 175px; width: 175px; border-radius: 50%"
+          alt="img"
+        /></RouterLink>
+
+<!--        </a>-->
 
         <br />
         <a href="https://github.com/s-infinite-box" target="_blank">
