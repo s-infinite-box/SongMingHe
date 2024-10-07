@@ -38,7 +38,7 @@ import { RouterLink, RouterView } from 'vue-router'
       />
       <nav style="margin: auto">
         <!--        <RouterLink to="/welcome"><h2>Welcome</h2></RouterLink>-->
-        <RouterLink to="/"><h2>博客</h2></RouterLink>
+        <RouterLink to="/blogList"><h2>博客</h2></RouterLink>
       </nav>
       <RouterView style="" />
     </div>

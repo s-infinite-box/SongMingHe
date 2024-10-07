@@ -22,8 +22,8 @@ export default defineConfig({
   server: {
     // 监听地址 0.0.0.0
     host: true,
-    // https://cn.vite.dev/config/shared-options.html#base
   },
+  // https://cn.vite.dev/config/shared-options.html#base
   base: './',
   build: {
     // outDir: '/SongMingHe/',
