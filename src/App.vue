@@ -69,10 +69,9 @@ import { RouterLink, RouterView } from 'vue-router'
 
 .container {
   display: grid;
-  //grid-template-columns: 225px 775px;
+  grid-template-columns: 225px 775px;
   //grid-template-rows: 25% 65%;
   grid-gap: 20px 20px;
-  margin: 0 auto;
 }
 
 .pic {
