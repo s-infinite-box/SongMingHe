@@ -1,7 +1,6 @@
 ---
 date: 2024-10-06
-category:
-  - 学习拓展
+category: 学习拓展
 tag:
   - 分布式一致性算法
   - raft

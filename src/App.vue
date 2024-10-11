@@ -3,25 +3,49 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
+ <el-menu
+    :default-active="activeIndex"
+    class="el-menu-demo"
+    mode="horizontal"
+    @select="handleSelect"
+  >
+    <el-menu-item index="1">Processing Center</el-menu-item>
+    <el-sub-menu index="2">
+      <template #title>Workspace</template>
+      <el-menu-item index="2-1">item one</el-menu-item>
+      <el-menu-item index="2-2">item two</el-menu-item>
+      <el-menu-item index="2-3">item three</el-menu-item>
+      <el-sub-menu index="2-4">
+        <template #title>item four</template>
+        <el-menu-item index="2-4-1">item one</el-menu-item>
+        <el-menu-item index="2-4-2">item two</el-menu-item>
+        <el-menu-item index="2-4-3">item three</el-menu-item>
+      </el-sub-menu>
+    </el-sub-menu>
+    <el-menu-item index="3" disabled>Info</el-menu-item>
+    <el-menu-item index="4">Orders</el-menu-item>
+  </el-menu>
   <!-- 顶层容器 -->
   <div class="container">
     <div class="container-left">
       <div style="margin: 20px; text-align: center">
-<!--        <a href="/">-->
-        <RouterLink to="/blogList"><img
-          src="@/assets/IMG_20181124_155151.jpg"
-          style="height: 175px; width: 175px; border-radius: 50%"
-          alt="img"
-        /></RouterLink>
-
-<!--        </a>-->
-
+        <!--        <a href="/">-->
+        <RouterLink to="/blogList">
+          <img
+            src="@/assets/IMG_20181124_155151.jpg"
+            style="height: 175px; width: 175px; border-radius: 50%"
+            alt="img"
+          />
+        </RouterLink>
+        <!--        </a>-->
         <br />
-        <a href="https://github.com/s-infinite-box" target="_blank">
+        <a href="https://github.com/s-infinite-box" target="_blank" title="https://github.com/s-infinite-box">
           <img src="@/assets/github-mark.png" alt="GitHub" class="font" />
           <!--          <span class="font">GitHub;</span>-->
         </a>
-        <a href="mailto:MingHe.Song@hotmail.com" target="_blank">
+        <!-- 空格符 -->
+        &emsp;
+        <a href="mailto:MingHe.Song@hotmail.com" target="_blank" title="MingHe.Song@hotmail.com">
           <img src="@/assets/mail.png" alt="邮箱" class="font" />
           <!--          <span class="font">邮箱;</span>-->
         </a>
@@ -49,8 +73,8 @@ import { RouterLink, RouterView } from 'vue-router'
 <style scoped>
 .font {
   font-size: 20px;
-  width: 20px;
-  height: 20px;
+  width: 35px;
+  height: 35px;
 }
 
 .container-left {
@@ -67,7 +91,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
 .container {
   display: grid;
-  grid-template-columns: 225px 775px;
+  //grid-template-columns: 225px 775px;
   //grid-template-rows: 25% 65%;
   grid-gap: 20px 20px;
   margin: 0 auto;
@@ -78,6 +102,10 @@ import { RouterLink, RouterView } from 'vue-router'
   vertical-align: middle;
   text-align: center;
   display: inline;
+}
+a {
+  text-decoration: none;
+  background-color: transparent;
 }
 
 /* 下面是VUE自带的style，暂时保留 */

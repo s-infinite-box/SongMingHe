@@ -11,7 +11,7 @@ export default (
   imgPath = '/',
   absImgPath = `./public${imgPath}`
 ) => {
-  const blogPages = []
+  let blogPages = []
 
   //  创建md解析器
   const md = createMD(imgPath)
@@ -22,6 +22,7 @@ export default (
   //  读取md文件夹，处理md文件
   fs.readdirSync(srcMDFilePath).forEach((file) => {
     const filePath = srcMDFilePath + file
+    // 非md文件作为静态资源，按路径复制
     if (!file.endsWith('.md')) {
       fs.cpSync(filePath, absImgPath + file, { recursive: true })
       return
@@ -29,7 +30,11 @@ export default (
     // 读取md文件内容
     const mdContent = fs.readFileSync(filePath, 'utf8')
     const { data, content } = grayMatter(mdContent, { excerpt: false })
-    data.date = formateDate(data.date)
+    if (data.date) {
+      data.date = formateDate(data.date)
+    } else {
+      data.date = formateDate(new Date())
+    }
 
     const htmlContent = md.render(content)
     fs.writeFile(absMDPagesPath + file.replace('.md', '.html'), htmlContent, err_throw)
@@ -40,5 +45,6 @@ export default (
       name: file.replace('.md', '')
     })
   })
+  blogPages = blogPages.sort((a, b) =>{return b.profile.date.localeCompare(a.profile.date)})
   fs.writeFileSync(`${absMDPagesPath}blogPages.json`, JSON.stringify(blogPages))
 }

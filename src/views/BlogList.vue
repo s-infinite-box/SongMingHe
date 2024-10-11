@@ -26,15 +26,16 @@ const displayFlag = ref(false)
     <template #heading>
       <a :href="md.profile.path">
         <!-- 名称 -->
-        {{ md.name }} <span style="text-align: right">{{ md.profile.date }}</span>
+        <span style="text-align: right">{{ md.profile.date }} &emsp;</span></a>{{ md.name }}
         <br />
         <!-- 类别 -->
-        <el-button type="success" v-for="category in md.profile.category" round
-          >{{ category }}
+        <el-button type="success"  round
+          >
+          {{ md.profile.category }}
         </el-button>
         <!-- 标签 -->
         <el-button type="primary" v-for="tag in md.profile.tag" round>{{ tag }}</el-button>
-      </a>
+
     </template>
     <el-divider border-style="dashed" />
     <div v-html="md.htmlContent" class="htmlContent" v-show="displayFlag"></div>
@@ -44,5 +45,9 @@ const displayFlag = ref(false)
 <style>
 .htmlContent img {
   width: 700px;
+}
+a {
+  text-decoration: none;
+  background-color: transparent;
 }
 </style>
