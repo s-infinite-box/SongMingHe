@@ -12,6 +12,8 @@ export default (
   absImgPath = `./public${imgPath}`
 ) => {
   let blogPages = []
+  let tags = new Map()
+  let categories = new Map()
 
   //  创建md解析器
   const md = createMD(imgPath)
@@ -35,16 +37,23 @@ export default (
     } else {
       data.date = formateDate(new Date())
     }
-
+    data.tag.forEach(tag => tags.set(tag, ''))
+    categories.set(data.category, '')
     const htmlContent = md.render(content)
     fs.writeFile(absMDPagesPath + file.replace('.md', '.html'), htmlContent, err_throw)
     blogPages.push({
       profile: data,
       htmlContent,
       path: `/${mdPagesPath}${file.replace('.md', '.html')}`,
-      name: file.replace('.md', '')
+      name: file.replace('.md', ''),
+      displayFlag: false
     })
   })
-  blogPages = blogPages.sort((a, b) =>{return b.profile.date.localeCompare(a.profile.date)})
-  fs.writeFileSync(`${absMDPagesPath}blogPages.json`, JSON.stringify(blogPages))
+  blogPages = blogPages.sort((a, b) => {
+    return b.profile.date.localeCompare(a.profile.date)
+  })
+  let originalList = {
+    blogPages, tags: [...tags.keys()], categories: [...categories.keys()]
+  }
+  fs.writeFileSync(`${absMDPagesPath}blogPages.json`, JSON.stringify(originalList))
 }
