@@ -21,6 +21,10 @@
   //margin-left: 1rem;
 }
 
+.htmlContent img {
+  width: 100%;
+}
+
 i {
   display: flex;
   place-items: center;
