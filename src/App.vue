@@ -45,6 +45,21 @@ const refresh = () => {
   mdList.value = originalList.blogPages
 
 }
+
+// let lastKnownScrollPosition = 0;
+// let ticking = false;
+// document.addEventListener("scroll", (event) => {
+//   lastKnownScrollPosition = window.scrollY;
+//   if (!ticking) {
+//     window.requestAnimationFrame(() => {
+//       alert(lastKnownScrollPosition)
+//       ticking = false;
+//     });
+//
+//     ticking = true;
+//   }
+// });
+
 </script>
 <template>
   <el-container direction="horizontal">
@@ -163,7 +178,7 @@ const refresh = () => {
             <el-button type="primary" v-for="tag in md.profile.tag" round>{{ tag }}</el-button>
           </template>
           <hr style="max-width: 475px;margin-left: 0" />
-          <div v-html="md.htmlContent" class="htmlContent" v-show="md.displayFlag" />
+          <div v-html="md.htmlContent"  class="htmlContent" v-show="md.displayFlag" />
           <br />
         </BlogItem>
       </el-main>
