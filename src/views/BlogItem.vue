@@ -1,6 +1,6 @@
 <template>
-  <div class="item">
-    <div class="details">
+  <div class="item" >
+    <div class="details" >
       <h3>
         <slot name="heading"></slot>
       </h3>
