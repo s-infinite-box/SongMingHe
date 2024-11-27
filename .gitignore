@@ -28,6 +28,6 @@ coverage
 *.sw?
 *.iml
 *.tsbuildinfo
-/.git-credentials
+.git-credentials
 yarn.lock
 pnpm-lock.yaml
