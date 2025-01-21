@@ -16,7 +16,8 @@
     "tbuild": "tauri build"
   },
   "dependencies": {
-    "element-plus": "^2.8.4",
+    "@element-plus/icons-vue": "^2.3.1",
+    "element-plus": "^2.9.3",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
   },

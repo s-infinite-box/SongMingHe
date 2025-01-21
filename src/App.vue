@@ -2,6 +2,7 @@
 import BlogPages from '@/assets/pages/blogPages.json?raw'
 import { ref } from 'vue'
 import BlogItem from '@/views/BlogItem.vue'
+import MsgBox from '@/views/MsgBox.vue'
 
 const originalList = JSON.parse(BlogPages)
 let tags = ref(originalList.tags)
@@ -64,32 +65,43 @@ const refresh = () => {
 <template>
   <el-container direction="horizontal">
     <el-aside width="17%" style="margin: 20px; text-align: center">
-      <img
-        src="@/assets/IMG_20181124_155151.jpg"
-        style="height: 175px; width: 175px; border-radius: 50%"
-        alt="img"
-      />
-      <br />
-      <h3>您好！我是<span style="">宋明河</span><br />欢迎来到我的博客</h3>
-      <a
-        style="text-decoration: none; background-color: transparent"
-        href="https://github.com/s-infinite-box"
-        target="_blank"
-        title="https://github.com/s-infinite-box"
-      >
-        <img src="@/assets/github-mark.png" alt="GitHub" class="font" />
-      </a>
-      <a
-        style="text-decoration: none; background-color: transparent"
-        href="mailto:MingHe.Song@hotmail.com"
-        target="_blank"
-        title="MingHe.Song@hotmail.com"
-      >
-        <img src="@/assets/mail.png" alt="邮箱" class="font" style="border-radius: 50%" />
-      </a>
-      <hr style="margin-top: 7px">
-
+      <el-affix :position="'top'">
+        <img
+          src="@/assets/IMG_20181124_155151.jpg"
+          style="height: 175px; width: 175px; border-radius: 50%"
+          alt="img"
+        />
+        <br />
+        <h3>您好！我是<span style="">宋明河</span><br />欢迎来到我的博客</h3>
+        <a
+          style="text-decoration: none; background-color: transparent"
+          href="https://github.com/s-infinite-box"
+          target="_blank"
+          title="https://github.com/s-infinite-box"
+        >
+          <img src="@/assets/github-mark.png" alt="GitHub" class="font" />
+        </a>
+        <a
+          style="text-decoration: none; background-color: transparent"
+          href="mailto:MingHe.Song@hotmail.com"
+          target="_blank"
+          title="MingHe.Song@hotmail.com"
+        >
+          <img src="@/assets/mail.png" alt="邮箱" class="font" style="border-radius: 50%" />
+        </a>
+        <hr style="margin-top: 7px">
+        <a >
+          <MsgBox>
+            <template #boxName>
+              <el-icon>
+                <Key />
+              </el-icon>
+            </template>
+          </MsgBox>
+        </a>
+      </el-affix>
     </el-aside>
+
     <el-container>
       <el-main style="max-width: 775px" width="75%">
         <p style="margin-bottom: 5px">
@@ -178,13 +190,15 @@ const refresh = () => {
             <el-button type="primary" v-for="tag in md.profile.tag" round>{{ tag }}</el-button>
           </template>
           <hr style="max-width: 475px;margin-left: 0" />
-          <div v-html="md.htmlContent"  class="htmlContent" v-show="md.displayFlag" />
+          <div v-html="md.htmlContent" class="htmlContent" v-show="md.displayFlag" />
           <br />
         </BlogItem>
       </el-main>
       <el-footer>
-        <el-button circle @click="refresh">&circlearrowleft;</el-button>
-        <el-button circle @click="mdList.forEach(md=>md.displayFlag=false)">↑</el-button>
+        <el-affix :position="'bottom'">
+          <el-button circle @click="refresh">&circlearrowleft;</el-button>
+          <el-button circle @click="mdList.forEach(md=>md.displayFlag=false)">↑</el-button>
+        </el-affix>
       </el-footer>
     </el-container>
   </el-container>
