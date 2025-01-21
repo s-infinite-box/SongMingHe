@@ -31,3 +31,6 @@ coverage
 .git-credentials
 yarn.lock
 pnpm-lock.yaml
+
+target
+Cargo.lock

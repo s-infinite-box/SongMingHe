@@ -21,6 +21,7 @@ export default defineConfig({
   },
   server: {
     // 监听地址 0.0.0.0
+    port: 3128,
     host: true,
   },
   // https://cn.vite.dev/config/shared-options.html#base
