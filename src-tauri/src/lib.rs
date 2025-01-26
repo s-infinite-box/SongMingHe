@@ -16,15 +16,3 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
-pub fn test(){
-        let public_key = r#"-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAst+KU0RBbJCAhYAR2kV9
-...
------END PUBLIC KEY-----"#;
-    let private_key = r#"-----BEGIN RSA PRIVATE KEY-----
-MIIEpAIBAAKCAQEAst+KU0RBbJCAhYAR2kV9...
------END RSA PRIVATE KEY-----"#;
-    let data = b"Hello, Rust!";
-    let encrypted_data = kit::encrypt_rsa(data, public_key);
-    println!("{:?}", encrypted_data);
-}
