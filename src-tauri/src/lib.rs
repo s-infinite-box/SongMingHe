@@ -1,6 +1,5 @@
-mod utils;
-
-use crate::utils::*;
+pub mod utils;
+pub mod cmds;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -16,8 +15,8 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            encrypt::encrypt_data,
-            encrypt::decrypt_data
+            cmds::encrypt_data,
+            cmds::decrypt_data,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

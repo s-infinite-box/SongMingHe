@@ -55,7 +55,6 @@ pub fn get_encryption_key() -> Result<Vec<u8>> {
 }
 
 /// Encrypt data
-#[tauri::command]
 pub fn encrypt_data(data: &str) -> Result<String, Box<dyn Error>> {
     let encryption_key = get_encryption_key()?;
     let key = Key::<Aes256Gcm>::from_slice(&encryption_key);
@@ -77,7 +76,6 @@ pub fn encrypt_data(data: &str) -> Result<String, Box<dyn Error>> {
 }
 
 /// Decrypt data
-#[tauri::command]
 pub fn decrypt_data(encrypted: &str) -> Result<String, Box<dyn Error>> {
     let encryption_key = get_encryption_key()?;
     let key = Key::<Aes256Gcm>::from_slice(&encryption_key);
