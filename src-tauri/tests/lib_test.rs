@@ -1,22 +1,34 @@
 /// 集成测试目录 与src同级
 use song_vue_tauri_lib;
-use ring::{rand};
-use song_vue_tauri_lib::kit::aes::{decrypt_aes, encrypt_aes};
+use song_vue_tauri_lib::utils::encrypt;
+
 
 #[test]
-fn encrypt_rsa() {
-    let mut rng = rand::SystemRandom::new();
-    let key = rng.generate(16); // 128位密钥
-    let iv = rng.generate(16); // 初始向量
-    let data = b"Hello, Rust!";
-    let encrypted_data = encrypt_aes(data, key, iv);
-    let decrypted_data = decrypt_aes(&encrypted_data, key, iv);
-    println!("Original data: {:?}", data);
-    println!("Encrypted data: {:?}", encrypted_data);
-    println!("Decrypted data: {:?}", decrypted_data);
+fn get_encryption_key() {
+    let encryption_key = encrypt::get_encryption_key();
+    assert!(encryption_key.is_ok());
+    log::info!("{:?}", encryption_key)
 }
 
+// 测试加密
 #[test]
-fn test() {
-    println!("test");
+fn encrypt_data() {
+    let data = "hello world";
+    let encrypted = encrypt::encrypt_data(data);
+    assert!(encrypted.is_ok());
+    log::info!("{:?}", encrypted)
 }
+
+// 测试解密
+#[test]
+fn decrypt_data() {
+    let data = "hello world";
+    let encrypted = encrypt::encrypt_data(data);
+    assert!(encrypted.is_ok());
+    let encrypted = encrypted.unwrap();
+    println!("Encrypted data: {:?}", encrypted);
+    let decrypted = encrypt::decrypt_data(&encrypted);
+    assert!(decrypted.is_ok());
+    println!("Decrypted data: {:?}", decrypted.unwrap());
+}
+
