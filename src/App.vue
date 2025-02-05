@@ -3,6 +3,7 @@ import BlogPages from '@/assets/pages/blogPages.json?raw'
 import { ref } from 'vue'
 import BlogItem from '@/views/BlogItem.vue'
 import MsgBox from '@/views/MsgBox.vue'
+import { invoke } from '@tauri-apps/api/core';
 
 const originalList = JSON.parse(BlogPages)
 let tags = ref(originalList.tags)
@@ -11,6 +12,7 @@ let checkCategories = ref(new Map())
 let categories = ref(originalList.categories)
 let search = ref('')
 let mdList = ref(originalList.blogPages)
+
 // 过滤搜索条件方法
 const filterProcessor = () => {
   mdList.value = originalList.blogPages.filter((md) => {
@@ -46,6 +48,7 @@ const refresh = () => {
   mdList.value = originalList.blogPages
 
 }
+
 
 // let lastKnownScrollPosition = 0;
 // let ticking = false;

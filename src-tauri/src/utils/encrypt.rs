@@ -5,18 +5,18 @@ use aes_gcm::{
 use anyhow::Result;
 use base64::{engine::general_purpose::STANDARD, Engine};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use std::path::PathBuf;
-use std::{env, fs};
 use std::error::Error;
 use std::ops::Add;
+use std::path::PathBuf;
+use std::{env, fs};
 
 const NONCE_LENGTH: usize = 12;
 pub static PPHOME_PATH: &str = "/root/p/pphome";
-pub static PPHOME_PATH_ENV_KEY: &str = "p_dir";
-
+pub static PPHOME_PATH_ENV: &str = "p_dir";
+pub static KEYFILE: &str = "p_dir";
 fn pphome_home_dir() -> Result<PathBuf> {
     // 读取环境变量中的pphome路径
-    if let Ok(val) = env::var(PPHOME_PATH_ENV_KEY) {
+    if let Ok(val) = env::var(PPHOME_PATH_ENV) {
         let path = PathBuf::from(val.add("/pphome"));
         if path.exists() {
             return Ok(path);
@@ -29,14 +29,16 @@ fn pphome_home_dir() -> Result<PathBuf> {
     }
     Err(anyhow::anyhow!("Failed to get the pphome directory"))
 }
+
 pub fn get_encryption_key() -> Result<Vec<u8>> {
     let app_dir = pphome_home_dir()?;
-    let key_path = app_dir.join(".encryption_key");
+    let key_path = app_dir.join(KEYFILE);
 
     if !key_path.exists() {
         // Generate and save new key
         let mut key = vec![0u8; 32];
-        getrandom::getrandom(&mut key).map_err(|e| anyhow::anyhow!("Failed to getrandom: {}", e))?;
+        getrandom::getrandom(&mut key)
+            .map_err(|e| anyhow::anyhow!("Failed to getrandom: {}", e))?;
 
         // Ensure directory exists
         if let Some(parent) = key_path.parent() {
@@ -52,8 +54,8 @@ pub fn get_encryption_key() -> Result<Vec<u8>> {
     fs::read(&key_path).map_err(|e| anyhow::anyhow!("Failed to read encryption key: {}", e))
 }
 
-
 /// Encrypt data
+#[tauri::command]
 pub fn encrypt_data(data: &str) -> Result<String, Box<dyn Error>> {
     let encryption_key = get_encryption_key()?;
     let key = Key::<Aes256Gcm>::from_slice(&encryption_key);
@@ -75,6 +77,7 @@ pub fn encrypt_data(data: &str) -> Result<String, Box<dyn Error>> {
 }
 
 /// Decrypt data
+#[tauri::command]
 pub fn decrypt_data(encrypted: &str) -> Result<String, Box<dyn Error>> {
     let encryption_key = get_encryption_key()?;
     let key = Key::<Aes256Gcm>::from_slice(&encryption_key);

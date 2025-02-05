@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ElMessage, ElMessageBox } from 'element-plus'
 
+
+
 const open = () => {
   ElMessageBox.prompt('Please input your e-mail', 'Tip', {
     confirmButtonText: 'OK',
