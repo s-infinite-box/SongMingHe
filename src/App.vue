@@ -1,9 +1,10 @@
 <script setup language="TS">
+
 import BlogPages from '@/assets/pages/blogPages.json?raw'
 import { ref } from 'vue'
 import BlogItem from '@/views/BlogItem.vue'
 import MsgBox from '@/views/MsgBox.vue'
-import { invoke } from '@tauri-apps/api/core';
+import { invoke } from '@tauri-apps/api/core'
 
 const originalList = JSON.parse(BlogPages)
 let tags = ref(originalList.tags)
@@ -12,6 +13,17 @@ let checkCategories = ref(new Map())
 let categories = ref(originalList.categories)
 let search = ref('')
 let mdList = ref(originalList.blogPages)
+
+const cmds = (cmd, args) => {
+  alert(cmd, args)
+  invoke (cmd, args)
+    .then((message) => {
+      alert(message)
+    })
+    .catch((error) => {
+      alert(error)
+    })
+}
 
 // 过滤搜索条件方法
 const filterProcessor = () => {
@@ -93,7 +105,7 @@ const refresh = () => {
           <img src="@/assets/mail.png" alt="邮箱" class="font" style="border-radius: 50%" />
         </a>
         <hr style="margin-top: 7px">
-        <a >
+        <a>
           <MsgBox>
             <template #boxName>
               <el-icon>
@@ -101,6 +113,16 @@ const refresh = () => {
               </el-icon>
             </template>
           </MsgBox>
+        </a>
+        <p/>
+        <a onclick="alert(123)">
+          123
+        </a>
+        <a @click="cmds('encrypt_data', { data: 'Hello!' })">
+          encrypt_data
+        </a>
+        <a @click="cmds('decrypt_data', { data: 'Hello!' })">
+          decrypt_data
         </a>
       </el-affix>
     </el-aside>
