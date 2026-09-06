@@ -30,7 +30,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: recursive # 拉取 themes/PaperMod
+          submodules: recursive # 拉取 themes/hugo-theme-stack
           fetch-depth: 0 # 完整历史，供 .Lastmod 等使用
 
       - name: Install Hugo CLI

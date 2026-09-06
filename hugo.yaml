@@ -1,16 +1,16 @@
 # Hugo 站点配置
 # 文档：https://gohugo.io/getting-started/configuration/
-# 主题：https://github.com/adityatelange/hugo-PaperMod/wiki
+# 主题：https://stack.jimmycai.com/config/
 
 baseURL: https://s-infinite-box.github.io/SongMingHe/
 title: 宋明河的博客
-theme: PaperMod
+theme: hugo-theme-stack
 
-# 语言：语言键用 zh 以匹配 PaperMod 的 i18n/zh.yaml（阅读时长、字数等界面文字）
+# 语言：语言键用 zh 以匹配 Stack 的 i18n/zh.toml
 defaultContentLanguage: zh
 languages:
   zh:
-    languageName: 中文
+    label: 简体中文
     locale: zh-CN
     weight: 1
 hasCJKLanguage: true # 按中文方式统计字数与阅读时长
@@ -18,21 +18,23 @@ timeZone: Asia/Shanghai
 
 enableRobotsTXT: true
 enableEmoji: true
-capitalizeListTitles: false # 标签/分类页标题保持原样，不自动首字母大写（select 不变成 Select）
+capitalizeListTitles: false # 标签/分类页标题保持原样，不自动首字母大写
 buildDrafts: false
 buildFuture: false
 
 pagination:
-  pagerSize: 10
+  pagerSize: 6
 
 # 分类法：文章 frontmatter 中的 categories / tags
 taxonomies:
   category: categories
   tag: tags
 
-# 输出格式
-#   - 首页额外输出 JSON：PaperMod 站内搜索的索引
-#   - 文章页额外输出 Markdown：/posts/<slug>/index.md，供"复制 Markdown"按钮读取
+# URL 结构：文章 /posts/<目录名>/，独立页面（归档、搜索、关于）直接挂在根路径下
+permalinks:
+  page: /:slug/
+
+# 输出格式：文章页额外输出 Markdown（/posts/<slug>/index.md），供"复制 Markdown"按钮读取
 outputFormats:
   markdown:
     mediaType: text/markdown
@@ -40,117 +42,127 @@ outputFormats:
     isPlainText: true
     notAlternative: true
 outputs:
-  home: [HTML, RSS, JSON]
   page: [HTML, markdown]
-
-minify:
-  disableXML: true
 
 markup:
   goldmark:
     renderer:
       unsafe: true # 允许在 Markdown 中直接写 HTML
   highlight:
-    noClasses: false # 使用 CSS class 高亮，配合 PaperMod 自带的代码样式
+    noClasses: false
     codeFences: true
     guessSyntax: true
-    lineNos: false
+    lineNos: true
+    lineNumbersInTable: true
+    tabWidth: 4
   tableOfContents:
     startLevel: 2
     endLevel: 4
-pygmentsUseClasses: true
+    ordered: true
 
+# 左侧栏菜单：主页 / 归档 / 搜索 / 关于 由各页面 frontmatter 中的 menu.main 声明
+# 这里只放不对应具体页面的入口
 menu:
   main:
     - identifier: posts
       name: 文章
       url: /posts/
-      weight: 10
-    - identifier: categories
-      name: 分类
-      url: /categories/
-      weight: 20
-    - identifier: tags
-      name: 标签
-      url: /tags/
-      weight: 30
-    - identifier: archives
-      name: 归档
-      url: /archives/
-      weight: 40
-    - identifier: search
-      name: 搜索
-      url: /search/
-      weight: 50
+      weight: -80
+      params:
+        icon: archives
+  social:
+    - identifier: github
+      name: GitHub
+      url: https://github.com/s-infinite-box
+      params:
+        icon: brand-github
+        newTab: true
+    - identifier: email
+      name: 邮箱
+      url: mailto:MingHe.Song@hotmail.com
+      params:
+        icon: mail
 
 params:
-  env: production
-  title: 宋明河的博客
-  description: 记录学习、思考与问题排查
-  author: 宋明河
-  keywords: [博客, 后端, 分布式, Linux]
-  DateFormat: "2006-01-02"
-  defaultTheme: auto # 跟随系统，页面右上角可手动切换
-  disableThemeToggle: false
-
   mainSections: [posts]
+  rssFullContent: true
+  favicon: ""
 
-  ShowReadingTime: true
-  ShowWordCount: true
-  ShowShareButtons: false
-  ShowPostNavLinks: true
-  ShowBreadCrumbs: true
-  ShowCodeCopyButtons: true
-  ShowRssButtonInSectionTermList: true
-  ShowFullTextinRSS: true
-  ShowToc: true
-  TocOpen: false
-  hideSummary: false
+  footer:
+    since: 2024
+    customText: ""
 
-  # 开启后 layouts/_partials/comments.html（giscus）会渲染在每篇文章底部
-  # 单篇关闭：在文章 frontmatter 中写 comments: false
-  comments: true
+  dateFormat:
+    published: "2006-01-02"
+    lastUpdated: "2006-01-02 15:04"
 
-  # 首页：个人资料模式
-  profileMode:
-    enabled: true
-    title: 宋明河
+  sidebar:
+    compact: false
+    emoji: ""
     subtitle: 您好！欢迎来到我的博客
-    imageUrl: images/avatar.jpg
-    imageWidth: 150
-    imageHeight: 150
-    imageTitle: 宋明河
-    buttons:
-      - name: 文章
-        url: posts
-      - name: 标签
-        url: tags
+    avatar: img/avatar.jpg
 
-  socialIcons:
-    - name: github
-      title: GitHub
-      url: https://github.com/s-infinite-box
-    - name: email
-      title: 邮箱
-      url: mailto:MingHe.Song@hotmail.com
-    - name: rss
-      title: RSS
-      url: index.xml
+  article:
+    headingAnchor: false
+    math: false
+    toc: true
+    readingTime: true
+    list:
+      showTags: true
+    license:
+      enabled: false
 
-  editPost:
-    URL: https://github.com/s-infinite-box/SongMingHe/edit/main/content
-    Text: 在 GitHub 上编辑
-    appendFilePath: true
+  # 右侧栏小组件：首页与文章页
+  widgets:
+    homepage:
+      - type: search
+      - type: archives
+        params:
+          limit: 5
+      - type: categories
+        params:
+          limit: 10
+      - type: tag-cloud
+        params:
+          limit: 20
+    page:
+      - type: toc
 
-  # 站内搜索（Fuse.js）参数
-  fuseOpts:
-    isCaseSensitive: false
-    shouldSort: true
-    location: 0
-    distance: 1000
-    threshold: 0.4
-    minMatchCharLength: 0
-    keys: [title, permalink, summary, content]
+  colorScheme:
+    toggle: true # 左侧栏底部"暗色模式"开关
+    default: auto
 
-  assets:
-    disableHLJS: true # 使用 Hugo 内置的 Chroma 高亮，不加载 highlight.js
+  imageProcessing:
+    autoOrient: false
+    content:
+      enabled: true
+    thumbnail:
+      enabled: true
+
+  cookies:
+    enabled: false
+
+  # 评论：giscus（GitHub Discussions），配置生成自 https://giscus.app
+  # 主题内置了配色联动：切换暗色模式时会通知 giscus iframe
+  comments:
+    enabled: true
+    provider: giscus
+    giscus:
+      repo: s-infinite-box/SongMingHe
+      repoID: R_kgDOM4eCsw
+      category: Announcements
+      categoryID: DIC_kwDOM4eCs84DE_rT
+      mapping: pathname
+      strict: 0
+      reactionsEnabled: 1
+      emitMetadata: 0
+      inputPosition: bottom
+      lightTheme: light
+      darkTheme: dark
+      lang: zh-CN
+      loading: lazy
+
+  opengraph:
+    twitter:
+      site: ""
+      card: summary_large_image

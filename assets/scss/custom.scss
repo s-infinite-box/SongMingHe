@@ -1,0 +1,37 @@
+// Stack 主题会自动引入 assets/scss/custom.scss，此处放站点自定义样式
+
+// 文章底部 Markdown 工具栏
+.md-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 0 var(--card-padding);
+    padding: 12px 0;
+    border-top: 1.5px solid var(--card-separator-color);
+    color: var(--card-text-color-secondary);
+}
+
+.md-tools-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border: 1.5px solid var(--card-separator-color);
+    border-radius: var(--tag-border-radius);
+    background: var(--card-background);
+    color: var(--card-text-color-main);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+        background: var(--card-background-selected);
+        color: var(--accent-color);
+    }
+}
+
+.md-tools-tip {
+    font-size: 1.2rem;
+    color: var(--card-text-color-tertiary);
+}

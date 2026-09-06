@@ -2,6 +2,7 @@
 /public/
 /resources/_gen/
 .hugo_build.lock
+/assets/jsconfig.json
 
 # 编辑器 / 系统
 .idea/

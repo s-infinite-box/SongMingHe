@@ -1,13 +1,14 @@
 {{- /*
-  文章正文下方的 Markdown 工具栏（覆盖 PaperMod 的同名空 partial）。
+  文章正文下方的 Markdown 工具栏。
   依赖 hugo.yaml 中的 markdown 输出格式：点击按钮时拉取 /posts/<slug>/index.md 写入剪贴板。
+  由 article/components/footer.html 引用。
 */ -}}
 {{- with .OutputFormats.Get "markdown" }}
-<div class="md-tools">
+<section class="md-tools">
   <button class="md-tools-btn" id="copy-markdown" type="button" data-md-url="{{ .RelPermalink }}">复制 Markdown</button>
   <a class="md-tools-btn" href="{{ .RelPermalink }}" target="_blank" rel="noopener">查看 Markdown 源码</a>
   <span class="md-tools-tip">复制后可直接粘贴到 CSDN、掘金等平台，图片已转为绝对链接</span>
-</div>
+</section>
 <script>
   (function () {
     var btn = document.getElementById('copy-markdown');

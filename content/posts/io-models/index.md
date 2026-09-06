@@ -1,6 +1,7 @@
 ---
 title: "IO模型"
 date: 2024-10-06T13:01:00+08:00
+image: 2024-07-08-17-29-41-image.png
 categories:
   - 学习拓展
 tags:
