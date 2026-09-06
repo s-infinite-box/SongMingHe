@@ -6,6 +6,7 @@ categories:
 tags:
   - 锁
   - 线程
+  - 分布式
 ---
 
 ![img.png](lock-middleware.png)

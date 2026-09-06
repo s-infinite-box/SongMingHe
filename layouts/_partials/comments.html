@@ -2,21 +2,56 @@
   giscus 评论（覆盖 PaperMod 的同名空 partial）。
   基于本仓库的 GitHub Discussions，配置生成自 https://giscus.app
   由 hugo.yaml 中 params.comments 控制是否渲染。
+
+  主题联动：giscus 的配色跟随站点当前主题（<html data-theme="dark|light">），
+  并监听 PaperMod 右上角切换按钮的效果，切换后通过 postMessage 通知 giscus iframe。
 */ -}}
-<div class="giscus-wrapper">
-  <script src="https://giscus.app/client.js"
-          data-repo="s-infinite-box/SongMingHe"
-          data-repo-id="R_kgDOM4eCsw"
-          data-category="Announcements"
-          data-category-id="DIC_kwDOM4eCs84DE_rT"
-          data-mapping="pathname"
-          data-strict="0"
-          data-reactions-enabled="1"
-          data-emit-metadata="0"
-          data-input-position="bottom"
-          data-theme="preferred_color_scheme"
-          data-lang="zh-CN"
-          crossorigin="anonymous"
-          async>
-  </script>
-</div>
+<div class="giscus-wrapper" id="giscus-wrapper"></div>
+<script>
+  (function () {
+    var wrapper = document.getElementById('giscus-wrapper');
+    if (!wrapper) return;
+    var html = document.documentElement;
+
+    // 站点当前主题：PaperMod 在 <html> 上用 data-theme 标记
+    function siteTheme() {
+      return html.dataset.theme === 'dark' ? 'dark' : 'light';
+    }
+
+    // 按当前主题动态插入 giscus 脚本
+    var attrs = {
+      'src': 'https://giscus.app/client.js',
+      'data-repo': 's-infinite-box/SongMingHe',
+      'data-repo-id': 'R_kgDOM4eCsw',
+      'data-category': 'Announcements',
+      'data-category-id': 'DIC_kwDOM4eCs84DE_rT',
+      'data-mapping': 'pathname',
+      'data-strict': '0',
+      'data-reactions-enabled': '1',
+      'data-emit-metadata': '0',
+      'data-input-position': 'bottom',
+      'data-theme': siteTheme(),
+      'data-lang': 'zh-CN',
+      'crossorigin': 'anonymous',
+      'async': ''
+    };
+    var script = document.createElement('script');
+    Object.keys(attrs).forEach(function (k) { script.setAttribute(k, attrs[k]); });
+    wrapper.appendChild(script);
+
+    // 通知 giscus iframe 切换配色
+    function syncGiscusTheme() {
+      var iframe = document.querySelector('iframe.giscus-frame');
+      if (!iframe) return;
+      iframe.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: siteTheme() } } },
+        'https://giscus.app'
+      );
+    }
+
+    // 监听 <html data-theme> 变化（PaperMod 的切换按钮会修改它），无需关心脚本执行顺序
+    new MutationObserver(function () {
+      syncGiscusTheme();
+    }).observe(html, { attributes: true, attributeFilter: ['data-theme'] });
+  })();
+</script>
