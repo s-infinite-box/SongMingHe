@@ -1,0 +1,61 @@
+{{- /*
+  文章正文下方的 Markdown 工具栏（覆盖 PaperMod 的同名空 partial）。
+  依赖 hugo.yaml 中的 markdown 输出格式：点击按钮时拉取 /posts/<slug>/index.md 写入剪贴板。
+*/ -}}
+{{- with .OutputFormats.Get "markdown" }}
+<div class="md-tools">
+  <button class="md-tools-btn" id="copy-markdown" type="button" data-md-url="{{ .RelPermalink }}">复制 Markdown</button>
+  <a class="md-tools-btn" href="{{ .RelPermalink }}" target="_blank" rel="noopener">查看 Markdown 源码</a>
+  <span class="md-tools-tip">复制后可直接粘贴到 CSDN、掘金等平台，图片已转为绝对链接</span>
+</div>
+<script>
+  (function () {
+    var btn = document.getElementById('copy-markdown');
+    if (!btn) return;
+
+    // 按钮文字短暂提示后恢复
+    function flash(text) {
+      var old = btn.textContent;
+      btn.textContent = text;
+      setTimeout(function () { btn.textContent = old; }, 2000);
+    }
+
+    // 兼容方案：隐藏 textarea + execCommand('copy')
+    function writeLegacy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '0';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok ? Promise.resolve() : Promise.reject(new Error('execCommand copy 失败'));
+    }
+
+    // 优先使用 Clipboard API；不可用（http 环境）或被拒绝时退回兼容方案
+    function write(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text).catch(function () { return writeLegacy(text); });
+      }
+      return writeLegacy(text);
+    }
+
+    btn.addEventListener('click', function () {
+      fetch(btn.dataset.mdUrl)
+        .then(function (res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.text();
+        })
+        .then(write)
+        .then(function () { flash('已复制 ✓'); })
+        .catch(function (err) {
+          console.error('复制 Markdown 失败', err);
+          flash('复制失败');
+        });
+    });
+  })();
+</script>
+{{- end }}
