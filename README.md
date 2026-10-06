@@ -4,10 +4,14 @@
 
 在线地址：<https://s-infinite-box.github.io/SongMingHe/>
 
+写作与发布的完整步骤见 [博客写作与发布流程](docs/blog-workflow.md)，涵盖素材整理、封面与配图、分类标签、旧文迁移、GitHub Pages 发布，以及 CSDN 和知乎分发。文档末尾说明了当前采用仓库文档、后续增加轻量 skill 的条件。
+
 ## 目录结构
 
 ```
 .
+├─ Makefile                       # 正式构建、本地预览与清理命令
+├─ docs/blog-workflow.md          # 可复用的博客写作与发布流程
 ├─ hugo.yaml                      # 站点配置（标题、菜单、侧栏、小组件、评论）
 ├─ content/
 │  ├─ _index.md                   # 首页（只声明菜单项）
@@ -50,7 +54,18 @@ git submodule update --init --recursive
 启动预览（默认 <http://localhost:1313/SongMingHe/>）：
 
 ```bash
-hugo server -D   # -D 同时渲染草稿
+make serve         # 预览已发布文章
+make serve-drafts  # 同时预览草稿
+```
+
+需要使用其他端口时运行 `make serve PORT=1314`，预览地址会同步调整为 <http://localhost:1314/SongMingHe/>。
+
+其他常用命令：
+
+```bash
+make        # 按正式环境构建，输出到 public/
+make help   # 查看命令与可覆盖变量
+make clean  # 清理 public/ 和 resources/_gen/ 中的生成产物
 ```
 
 ## 写文章

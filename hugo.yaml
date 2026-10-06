@@ -87,7 +87,7 @@ menu:
 params:
   mainSections: [posts]
   rssFullContent: true
-  favicon: img/avatar.jpg
+  favicon: img/avatar-favicon-round.ico
 
   footer:
     since: 2024
