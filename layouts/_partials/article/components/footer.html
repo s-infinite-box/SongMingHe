@@ -6,6 +6,17 @@
 {{ partial "article/components/markdown-tools" . }}
 
 <footer class="article-meta article-footer">
+    {{- $article := . -}}
+    {{- with .GetTerms "series" -}}
+    <section class="article-series inline-meta">
+        <span>系列：</span>
+        {{ range . }}
+        <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+        {{ end }}
+        {{ with $article.Params.series_order }}<span>第 {{ . }} 篇</span>{{ end }}
+    </section>
+    {{- end -}}
+
     {{ partial "article/components/tags" . }}
 
     {{ if and (.Site.Params.article.license.enabled) (not (eq .Params.license false)) }}

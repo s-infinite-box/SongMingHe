@@ -25,10 +25,11 @@ buildFuture: false
 pagination:
   pagerSize: 6
 
-# 分类法：文章 frontmatter 中的 categories / tags
+# 分类法：分类、标签，以及可持续更新的文章系列
 taxonomies:
   category: categories
   tag: tags
+  series: series
 
 # URL 结构：文章 /posts/<目录名>/，独立页面（归档、搜索、关于）直接挂在根路径下
 permalinks:

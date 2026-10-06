@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <!-- Palette source: themes/hugo-theme-stack/assets/scss/variables.scss. Plugin serif/sans/mono roles are retained with local Simplified Chinese fallbacks; fonts are not claimed as an exact blog match. -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>aa：当前进度与后续计划</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&family=Noto+Sans+KR:wght@400;500;600&family=Noto+Serif+KR:wght@400&family=Noto+Sans+TC:wght@400;500;600&family=Noto+Serif+TC:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5fa;
+      --color-ink:     #000000;
+      --color-muted:   #707070;
+      --color-accent:  #34495e;
+      --font-sans:     'Geist', 'Noto Sans CJK SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      --font-serif:    'Instrument Serif', 'Noto Serif', 'Noto Serif CJK SC', 'Noto Serif SC', 'Songti SC', serif;
+      --font-mono:     'Geist Mono', 'Noto Sans Mono CJK SC', monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .frame { max-width: 400px; width: 100%; min-width: 0; }
+    /* The SVG holds its readable width (min-width == the viewBox width, so the
+       type ramp is never silently scaled down). This wrapper lets a narrow
+       screen scroll the diagram instead of the whole page. */
+    .diagram-container { width: 100%; overflow-x: auto; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+    }
+
+    svg { width: 100%; min-width: 400px; display: block; }
+    /* Paper has no scrollbar, so the local scroller would clip instead of
+       scroll. Let the diagram scale down to the sheet: smaller but whole
+       beats sharp but cut off. Must come after the svg rule above - a media
+       query adds no specificity, so a later plain rule would win. */
+    @media print {
+      .diagram-container { overflow-x: visible; }
+      svg { min-width: 0; }
+    }
+    .diagram-node { fill: #ffffff; stroke: #000000; stroke-width: 1; }
+    .diagram-node.focal { fill: rgba(52,73,94,0.08); stroke: #34495e; stroke-width: 1.2; }
+    .diagram-node.planned { fill: #f5f5fa; stroke: #b6bdc5; stroke-dasharray: 4,3; }
+    .status-tag { fill: none; stroke: #b6bdc5; stroke-width: 0.8; }
+    .status-tag.focal { stroke: #34495e; }
+    .status-tag.planned { stroke-dasharray: 4,3; }
+    .node-name { fill: #000000; font: 600 12px 'Geist', 'Noto Sans CJK SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .node-note { fill: #707070; font: 400 12px 'Geist', 'Noto Sans CJK SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .node-tech { fill: #707070; font: 400 9px 'Geist Mono', 'Noto Sans Mono CJK SC', monospace; }
+    .status-label, .legend-label { fill: #707070; font: 500 12px 'Geist', 'Noto Sans CJK SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .current-step .node-note, .current-step .node-tech, .current-step .status-label { fill: #34495e; }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">FLOWCHART · AA LEARNING</p>
+    <h1>aa：当前进度与后续计划</h1>
+
+    <!-- Editable diagram source lives under assets/diagrams; the blog embeds its generated SVG resource. Fit canvas: 400×764; five learning steps; scoped light skin, no global profile mutation. -->
+    <div class="diagram-container">
+      <svg viewBox="0 0 400 764" width="400" height="764" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="aa-learning-progress-title aa-learning-progress-desc">
+        <title id="aa-learning-progress-title">aa：当前进度与后续计划</title>
+        <desc id="aa-learning-progress-desc">aa 已验证工程加载和 32 位入口，当前待验证启动检查，随后进入 64 位 Rust 并逐步学习内核子系统。</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#707070"/></marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#34495e"/></marker>
+          <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#34495e"/></marker>
+        </defs>
+        <rect width="100%" height="100%" fill="#f5f5fa"/>
+        <!-- Arrows express learning order, not the CPU call graph. Draw before nodes. -->
+        <line x1="200" y1="136" x2="200" y2="168" stroke="#707070" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="200" y1="264" x2="200" y2="296" stroke="#707070" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <line x1="200" y1="392" x2="200" y2="424" stroke="#707070" stroke-width="1.2" marker-end="url(#arrow)" stroke-dasharray="5,4"/>
+        <line x1="200" y1="520" x2="200" y2="552" stroke="#707070" stroke-width="1.2" marker-end="url(#arrow)" stroke-dasharray="5,4"/>
+        <g data-step="工程与引导加载">
+          <rect x="40" y="40" width="320" height="96" rx="6" fill="#f5f5fa"/>
+          <rect class="diagram-node " x="40" y="40" width="320" height="96" rx="6"/>
+          <rect class="status-tag " x="56" y="56" width="80" height="20" rx="2"/>
+          <text class="status-label" x="96" y="70" text-anchor="middle">已验证</text>
+          <text class="node-name" x="148" y="70">工程与引导加载</text>
+          <text class="node-note" x="56" y="94">裸机 Rust · ELF 与内存布局</text>
+          <text class="node-tech" x="56" y="114">no_std · linker.ld · GRUB / Multiboot2</text>
+        </g>
+        <g data-step="32 位入口与调试">
+          <rect x="40" y="168" width="320" height="96" rx="6" fill="#f5f5fa"/>
+          <rect class="diagram-node " x="40" y="168" width="320" height="96" rx="6"/>
+          <rect class="status-tag " x="56" y="184" width="80" height="20" rx="2"/>
+          <text class="status-label" x="96" y="198" text-anchor="middle">已验证</text>
+          <text class="node-name" x="148" y="198">32 位入口与调试</text>
+          <text class="node-note" x="56" y="222">参数保存与启动栈已有动态验证</text>
+          <text class="node-tech" x="56" y="242">_start · QEMU / GDB · EAX / EBX / ESP</text>
+        </g>
+        <g data-step="启动标识检查" class="current-step">
+          <rect x="40" y="296" width="320" height="96" rx="6" fill="#f5f5fa"/>
+          <rect class="diagram-node focal" x="40" y="296" width="320" height="96" rx="6"/>
+          <rect class="status-tag focal" x="56" y="312" width="80" height="20" rx="2"/>
+          <text class="status-label" x="96" y="326" text-anchor="middle">当前待验证</text>
+          <text class="node-name" x="148" y="326">启动标识检查</text>
+          <text class="node-note" x="56" y="350">比较代码已写入，正常与错误分支待验证</text>
+          <text class="node-tech" x="56" y="370">Multiboot2 magic · GDB</text>
+        </g>
+        <g data-step="进入 64 位 Rust">
+          <rect x="40" y="424" width="320" height="96" rx="6" fill="#f5f5fa"/>
+          <rect class="diagram-node planned" x="40" y="424" width="320" height="96" rx="6"/>
+          <rect class="status-tag planned" x="56" y="440" width="80" height="20" rx="2"/>
+          <text class="status-label" x="96" y="454" text-anchor="middle">下一步</text>
+          <text class="node-name" x="148" y="454">进入 64 位 Rust</text>
+          <text class="node-note" x="56" y="478">准备运行环境，再进入 Rust 主函数</text>
+          <text class="node-tech" x="56" y="498">GDT · page tables · long mode · kernel_main</text>
+        </g>
+        <g data-step="内核功能逐步扩展">
+          <rect x="40" y="552" width="320" height="112" rx="6" fill="#f5f5fa"/>
+          <rect class="diagram-node planned" x="40" y="552" width="320" height="112" rx="6"/>
+          <rect class="status-tag planned" x="56" y="568" width="80" height="20" rx="2"/>
+          <text class="status-label" x="96" y="582" text-anchor="middle">后续计划</text>
+          <text class="node-name" x="148" y="582">内核功能逐步扩展</text>
+          <text class="node-note" x="56" y="606">串口与 panic → 异常、内存、调度</text>
+          <text class="node-note" x="56" y="626">再到用户态、系统调用和文件系统</text>
+          <text class="node-tech" x="56" y="642">serial · memory · scheduler · syscall · VFS</text>
+        </g>
+        <line x1="40" y1="704" x2="360" y2="704" stroke="rgba(0,0,0,0.12)" stroke-width="0.8"/>
+        <rect class="diagram-node" x="40" y="720" width="16" height="12" rx="2"/>
+        <text class="legend-label" x="64" y="731">已验证</text>
+        <rect class="diagram-node focal" x="144" y="720" width="16" height="12" rx="2"/>
+        <text class="legend-label" x="168" y="731">当前</text>
+        <rect class="diagram-node planned" x="244" y="720" width="16" height="12" rx="2"/>
+        <text class="legend-label" x="268" y="731">计划</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>
