@@ -57,7 +57,7 @@ hugo server -D   # -D 同时渲染草稿
 hugo new posts/my-post/index.md
 ```
 
-会在 `content/posts/my-post/index.md` 生成文件，补上 frontmatter 后开始写正文：
+会在 `content/posts/my-post/index.md` 生成文件，补上 frontmatter 后开始写[config](../../../../.ssh/config)正文：
 
 ```yaml
 ---
