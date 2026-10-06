@@ -1,10 +1,13 @@
 ---
 title: "ubuntu20误操作导致开机到logo页面后直接关机"
 date: 2024-11-21T12:22:00+08:00
+image: img/covers/Linux.webp
 categories:
-  - troubleshooting
+  - 系统环境
 tags:
-  - linux
+  - Linux
+  - Ubuntu
+  - systemd
 ---
 
 ### 背景

@@ -1,11 +1,14 @@
 ---
 title: "windows与ubuntu双系统主机下ubuntu访问windows磁盘是只读"
 date: 2024-11-21T16:10:00+08:00
+image: img/covers/Linux-or-Windows.jpg
 categories:
-  - troubleshooting
+  - 系统环境
 tags:
-  - linux
-  - disk
+  - Linux
+  - NTFS
+  - Ubuntu
+  - Windows
 ---
 
 ### 看一些博客写的切换windows关闭快速启动，结果到windows系统以后，电源选项里就没有快速启动，这个地方还是跑了一下关闭快速启动的命令，

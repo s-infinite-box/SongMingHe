@@ -1,8 +1,9 @@
 ---
 title: "进程、线程、协程"
 date: 2024-10-06T00:00:00+08:00
+image: img/covers/Linux.webp
 categories:
-  - 学习拓展
+  - Linux内核
 tags:
   - 进程
   - 线程

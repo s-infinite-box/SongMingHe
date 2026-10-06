@@ -1,9 +1,9 @@
 ---
 title: "IO模型"
 date: 2024-10-06T13:01:00+08:00
-image: 2024-07-08-17-29-41-image.png
+image: img/covers/Linux.webp
 categories:
-  - 学习拓展
+  - Linux内核
 tags:
   - IO
   - select

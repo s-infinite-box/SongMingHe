@@ -87,7 +87,7 @@ menu:
 params:
   mainSections: [posts]
   rssFullContent: true
-  favicon: ""
+  favicon: img/avatar.jpg
 
   footer:
     since: 2024
@@ -131,7 +131,7 @@ params:
 
   colorScheme:
     toggle: true # 左侧栏底部"暗色模式"开关
-    default: auto
+    default: dark
 
   imageProcessing:
     autoOrient: false
