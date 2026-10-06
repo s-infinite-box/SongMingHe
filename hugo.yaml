@@ -3,7 +3,7 @@
 # 主题：https://stack.jimmycai.com/config/
 
 baseURL: https://s-infinite-box.github.io/SongMingHe/
-title: 宋明河的博客
+title: 宋明河
 theme: hugo-theme-stack
 
 # 语言：语言键用 zh 以匹配 Stack 的 i18n/zh.toml
