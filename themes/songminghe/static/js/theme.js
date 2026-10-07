@@ -191,16 +191,18 @@
     window.addEventListener('resize', update, {signal});
     update();
   }
-  function loadComments(button) {
-    button.remove();
+  function loadComments() {
+    const container = document.querySelector('#comments');
+    const config = document.querySelector('#giscus-config');
+    if (!container || !config || container.querySelector('script,.giscus-frame')) return;
     const script = document.createElement('script');
     script.src = 'https://giscus.app/client.js';
     script.async = true;
     script.crossOrigin = 'anonymous';
-    const {lightTheme, darkTheme, ...values} = JSON.parse(document.querySelector('#giscus-config').textContent);
+    const {lightTheme, darkTheme, ...values} = JSON.parse(config.textContent);
     values.theme = document.body.classList.contains('dark') ? darkTheme : lightTheme;
     for (const [key, value] of Object.entries(values)) script.setAttribute('data-' + key, value);
-    document.querySelector('#comments').append(script);
+    container.append(script);
   }
   async function copyText(text) {
     if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
@@ -237,7 +239,6 @@
         toast('Markdown 已复制');
       } catch { toast('复制失败'); }
     }, {signal});
-    document.querySelector('[data-load-comments]')?.addEventListener('click', event => loadComments(event.currentTarget), {signal});
     document.querySelector('.back-top')?.addEventListener('click', event => { event.preventDefault(); scrollTo({top: 0, behavior: 'smooth'}); }, {signal});
     document.querySelectorAll('.article-content img').forEach(image => image.addEventListener('click', () => {
       const dialog = document.createElement('dialog');
@@ -280,6 +281,7 @@
     setupSearch(signal);
     setupDirectory(signal);
     setupArticle(signal);
+    loadComments();
   }
   setupShell();
   setupPlayer();

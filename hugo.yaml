@@ -126,4 +126,4 @@ params:
       lightTheme: light
       darkTheme: dark
       lang: zh-CN
-      loading: lazy
+      loading: eager

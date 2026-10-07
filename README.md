@@ -108,7 +108,7 @@ draft: true
 
 文章页提供“复制 Markdown”和“查看 Markdown 源码”，导出地址仍为 `/posts/<slug>/index.md`。正文不含 frontmatter，单篇相对配图转换为绝对 URL，便于向 CSDN 等平台分发。切换主题不改变原来的导出内容。
 
-评论使用原仓库的 giscus / GitHub Discussions，配置集中在 `hugo.yaml`。点击“加载评论”后获取评论组件；跨页重新加载对应文章评论，明暗配色会同步。
+评论使用原仓库的 giscus / GitHub Discussions，配置集中在 `hugo.yaml`。进入文章自动加载评论组件；跨页重新加载对应文章评论，明暗配色会同步。
 
 根地址迁移后以 `specific` 和原 `SongMingHe/posts/<slug>/` 检索词关联讨论，仓库 ID 与分类 ID 保持原值。构建后 `scripts/prepare-legacy-paths.py` 为旧项目路径补页面跳转及资源兼容文件。
 
