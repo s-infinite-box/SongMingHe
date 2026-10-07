@@ -39,7 +39,6 @@
 │   └── .../page/<n>/         # 65 个旧分页静态跳转
 ├── layouts/single.markdown.md # Markdown 导出模板
 ├── themes/songminghe/        # 个人主题模板、样式、脚本和组件许可
-├── themes/hugo-theme-stack/  # 保留的旧主题子模块，供比对与回退
 ├── scripts/verify-build.py   # 构建产物兼容检查，仅使用 Python 标准库
 ├── scripts/legacy-pages.json # 需要保留的旧分页地址清单
 ├── docs/                     # 写作流程和迁移验收记录
@@ -61,7 +60,7 @@ make clean             # 清理构建产物
 
 可用 `HUGO=/path/to/hugo` 选择指定二进制。GitHub Actions 固定使用 0.165.0，构建后也会运行检查脚本，检查失败则不上传站点产物。
 
-个人主题没有 npm 构建步骤，APlayer 和 Swup 浏览器资源已保存在仓库中。旧 Stack 子模块暂时保留；当前构建不依赖它，迁移后无需升级旧主题。
+个人主题没有 npm 构建步骤，APlayer 和 Swup 浏览器资源已保存在仓库中。旧 Stack 子模块已移除，构建使用仓库内的 `songminghe` 主题，无需拉取外部主题。
 
 ## 写文章
 
