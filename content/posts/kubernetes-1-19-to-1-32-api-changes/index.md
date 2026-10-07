@@ -12,7 +12,9 @@ tags:
 draft: false
 ---
 
-#### 对比了下面这些资源，基本是一些常用的：
+## 对比范围
+
+对比了下面这些资源，基本是一些常用的：
 
 * configmap
 * cronjob
@@ -29,14 +31,14 @@ draft: false
 * statefulset
 * storageclass
 
-### **资源变化情况**
+## 资源变化情况
 
-#### 普遍修改
+### 普遍修改
 
 * `删除：metadata.clusterName<string>`
 * `添加：metadata.managedFields.subresource<string>`
 
-#### POD
+### Pod
 
 * `删除：spec.ephemeralContainers.volumes.ephemeral.readOnly<boolean>`在1.31版本中删除，`ephemeralContainers`卷的只读挂载，卷本身依旧有只读选项
 * `添加：`亲和性和反亲和性的软硬匹配
@@ -65,11 +67,11 @@ draft: false
 * `添加：FIELDS.spec.template.spec.hostUsers`使用主机的用户名称空间
 * `添加：FIELDS.spec.template.spec.os`指定POD中容器的操作系统。如果设置了该操作系统，一些POD和容器字段将受到限制。
 
-**DaemonSet**
+### DaemonSet
 
 * `添加：FIELDS.spec.updateStrategy.rollingUpdate.maxSurge`对于拥有可用 DaemonSet Pod 的节点而言，在更新期间可以拥有更新后的 DaemonSet Pod 的最大节点数
 
-**JOB**
+### Job
 
 * `添加：FIELDS.spec.completionMode` 增加一个JOB完成的判断
 * `添加：`三类执行策略
@@ -77,13 +79,13 @@ draft: false
   * `FIELDS.spec.podFailurePolicy` 指定处理失效 Pod 的策略。特别是，它允许指定采取关联操作需要满足的一组操作和状况。
   * `FIELDS.spec.successPolicy` 描述何时可以根据某些索引的成功将任务声明为成功
 
-#### **CronJob**：
+### CronJob
 
 * 修改：Version: `batch/v1beta1`==>`batch/v1`
 * `添加：FIELDS.spec.timeZone`给定时间表的时区名称
 * `添加：FIELDS.status.lastSuccessfulTime`上次成功完成作业的时间信息。
 
-#### **HorizontalPodAutoscaler（V2修改较大）**：
+### HorizontalPodAutoscaler（V2修改较大）
 
 * 修改：Version: `autoscaling/v1`==>`autoscaling/v2`
 * `删除：spec.targetCPUUtilizationPercentage`字段删除，V2提供了更丰富的指标选项，不仅仅局限于 CPU 利用率
@@ -92,7 +94,7 @@ draft: false
 * `添加：FIELDS.status.conditions`conditions 是此自动扩缩器扩缩其目标所需的一组条件，并指示是否满足这些条件。
 * `添加：FIELDS.status.currentMetrics` 是此自动扩缩器使用的指标的最后读取状态。
 
-#### **Ingress**：
+### Ingress
 
 * 修改：Version: `autoscaling/v1`==>`autoscaling/v2`
 * `删除：spec.targetCPUUtilizationPercentage`字段删除，V2提供了更丰富的指标选项，不仅仅局限于 CPU 利用率
@@ -101,7 +103,7 @@ draft: false
 * `添加：FIELDS.status.conditions`conditions 是此自动扩缩器扩缩其目标所需的一组条件，并指示是否满足这些条件。
 * `添加：FIELDS.status.currentMetrics` 是此自动扩缩器使用的指标的最后读取状态。
 
-#### **Service**：
+### Service
 
 * `修改：spec.ipFamily<string>`==>`spec.ipFamilies<[]string>` 有效值为 “IPv4” 和 “IPv6”。通常根据集群配置和 ipFamilyPolicy 字段自动设置
 * `删除：spec.topologyKeys`
@@ -111,17 +113,17 @@ draft: false
 * `添加：FIELDS.spec.trafficDistribution` 提供了一种流量如何被分配到 Service 端点的偏好表达方式
 * `添加：FIELDS.status.conditions`当前状态
 
-**PersistentVolume：**
+### PersistentVolume
 
 * 添加：`FIELDS.spec.csi.nodeExpandSecretRef` 是对包含敏感信息的 Secret 对象的引用， 从而传递到 CSI 驱动以完成 CSI NodeExpandVolume 调用。
 
-#### **PersistentVolumeClaim**：
+### PersistentVolumeClaim
 
 * `删除：spec.volumeName`
 * 添加：`FIELDS.spec.volumes.image`镜像作为卷挂载到POD
 * `添加：FIELDS.spec.dataSourceRef` 允许任意名字空间中的任何非核心对象作为数据源
 
-**StatefulSet：**
+### StatefulSet
 
 * `添加：FIELDS.spec.minReadySeconds`新创建的 Pod 应准备就绪（其任何容器都未崩溃）的最小秒数，以使其被视为可用
 * `添加：FIELDS.spec.ordinals`ordinals 控制 StatefulSet 中副本索引的编号。 默认序数行为是将索引 "0" 设置给第一个副本，对于每个额外请求的副本，该索引加一。

@@ -17,11 +17,11 @@ draft: false
 
 <br>
 
-# 一、安装参考：
+## 安装参考
 
-## [参考文档](https://docs.cilium.io/en/v1.12/gettingstarted/k8s-install-advanced/)
+[参考文档](https://docs.cilium.io/en/v1.12/gettingstarted/k8s-install-advanced/)
 
-## cli命令行安装
+### CLI 命令行安装
 
 ```
 # 获取最新CLI文件
@@ -44,9 +44,9 @@ cilium status
 kubectl get po -Aw
 ```
 
-## helm安装cilium：
+### Helm 安装 Cilium
 
-### 安装helm：
+**安装 Helm：**
 
 ```
 latest_release_url="https://get.helm.sh/helm-latest-version"
@@ -60,24 +60,26 @@ DOWNLOAD_URL="https://get.helm.sh/$HELM_DIST"
 wget $DOWNLOAD_URL
 ```
 
-### 添加helm仓库
+**添加 Helm 仓库：**
 
 ```
 helm repo add cilium https://helm.cilium.io/
 ```
 
-### 安装cilium  参数配置及格式同cli模式
+**安装 Cilium：** 参数配置及格式同 CLI 模式。
 
 ```
 helm install cilium cilium/cilium --namespace kube-system --set kubeProxyReplacement=false --set hubble.relay.enabled=true --set hubble.ui.enabled=true
 ```
 
-## 3. 内网离线安装镜像处理：
+### 内网离线安装镜像处理
 
 目前cilium的CLI工具没有提供统一的离线安装参数，但是可以在安装时指定组件镜像
 默认镜像源：quay.io，目前在国内可以正常下载，无需梯子
 
-### 在CRI（containerd/docker）替换镜像仓库代理：quay.io/cilium ==》 harbor.my.cn/devops(替换为自己的内网镜像仓库地址)
+#### CRI 镜像仓库代理
+
+在CRI（containerd/docker）替换镜像仓库代理：quay.io/cilium ==》 harbor.my.cn/devops(替换为自己的内网镜像仓库地址)
 
 - containerd，参考文档：[https://github.com/containerd/containerd/blob/main/docs/hosts.md#cri](https://github.com/containerd/containerd/blob/main/docs/hosts.md#cri)
 - 查看版本：ctr -v
@@ -100,34 +102,43 @@ helm install cilium cilium/cilium --namespace kube-system --set kubeProxyReplace
 
   1. /etc/containerd/config.toml  添加
 
-     \[plugins."io.containerd.cri.v1.images".registry\]
-     config\_path = "/etc/containerd/certs.d"
+     ```toml
+     [plugins."io.containerd.cri.v1.images".registry]
+     config_path = "/etc/containerd/certs.d"
+     ```
+
   2. config\_path内具体路径，registry\_host\_name为代理的repo地址：域名或端口号，hosts为具体配置内容
-     /etc/containerd/certs.d/\[registry\_host\_name|IP address\]\[:port\]/hosts.toml
+     `/etc/containerd/certs.d/[registry_host_name|IP address][:port]/hosts.toml`
+
   3. hosts.toml配置
-     \# server指定此 Registry Host 命名空间的默认服务器。
+
+     ```toml
+     # server指定此 Registry Host 命名空间的默认服务器。
      #指定 （s） 后，将按列出的顺序首先尝试主机。 如果 （s） 都已尝试，则 将用作回退。hosthostserver
      #如果未指定，则将自动使用映像的注册表主机命名空间。server
-     server = "[https://registry-1.docker.io](https://registry-1.docker.io)"
+     server = "https://registry-1.docker.io"
 
-     \[host."[https://mirror.registry](https://mirror.registry)"\]
+     [host."https://mirror.registry"]
      # 是用于指定主机操作的可选设置 能够执行。仅包含适用的值。
-     capabilities =  \["pull", "resolve", "push"\]
+     capabilities =  ["pull", "resolve", "push"]
      # ca（证书颁发机构认证）可以设置为路径或 paths 每个路径都指向一个 CA 文件，用于对 Registry 进行身份验证 Namespace。
      ca = "/etc/certs/mirror.pem"
-     # skip\_verify跳过对注册表证书链的验证，并且 host name （设置为 .这应该仅用于测试或 与其他验证连接的方法结合使用。（默认为true)
-     skip\_verify = false
-     \[host."https://mirror.registry".header\]
-     x-custom-2 = \["value1", "value2"\]
+     # skip_verify跳过对注册表证书链的验证，并且 host name （设置为 .这应该仅用于测试或 与其他验证连接的方法结合使用。（默认为true)
+     skip_verify = false
+     [host."https://mirror.registry".header]
+     x-custom-2 = ["value1", "value2"]
 
-     \[host."[https://non-compliant-mirror.registry/v2/upstream](https://non-compliant-mirror.registry/v2/upstream)"\]
-     capabilities = \["pull"\]
-     # override\_path用于指示已定义主机的 API 根端点 在 URL 路径中，而不是按 API 规范。这可以与 缺少前缀的不合规 OCI 注册表。 （默认为/false)
-     override\_path = true
+     [host."https://non-compliant-mirror.registry/v2/upstream"]
+     capabilities = ["pull"]
+     # override_path用于指示已定义主机的 API 根端点 在 URL 路径中，而不是按 API 规范。这可以与 缺少前缀的不合规 OCI 注册表。 （默认为/false)
+     override_path = true
+     ```
 
-### helm/cilium 创建时通过参数指定组件的镜像，[参考文档](https://docs.cilium.io/en/stable/helm-reference/#id1)
+#### 通过 Helm 指定组件镜像
 
-#### 基本使用镜像 注意修改镜像版本信息，可以直接helm拉chart下来，然后自己看value.yaml
+helm/cilium 创建时通过参数指定组件的镜像，[参考文档](https://docs.cilium.io/en/stable/helm-reference/#id1)
+
+基本使用镜像 注意修改镜像版本信息，可以直接helm拉chart下来，然后自己看value.yaml
 
 image: [quay.io/cilium/cilium:v1.16.4@sha256:d55ec38938854133e06739b1af237932b9c4dd4e75e9b7b2ca3acc72540a44bf](http://quay.io/cilium/cilium:v1.16.4@sha256:d55ec38938854133e06739b1af237932b9c4dd4e75e9b7b2ca3acc72540a44bf)
 
@@ -138,17 +149,22 @@ operator.image: [quay.io/cilium/operator-generic:v1.16.4@sha256:c55a7cbe19fe0b6b
 hubble.relay.image: [quay.io/cilium/hubble-relay:v1.16.4@sha256:fb2c7d127a1c809f6ba23c05973f3dd00f6b6a48e4aee2da95db925a4f0351d2](http://quay.io/cilium/hubble-relay:v1.16.4@sha256:fb2c7d127a1c809f6ba23c05973f3dd00f6b6a48e4aee2da95db925a4f0351d2)
 
 hubble.ui.frontend.image: [quay.io/cilium/hubble-ui-backend:v0.13.1@sha256:0e0eed917653441fded4e7cdb096b7be6a3bddded5a2dd10812a27b1fc6ed95b](http://quay.io/cilium/hubble-ui-backend:v0.13.1@sha256:0e0eed917653441fded4e7cdb096b7be6a3bddded5a2dd10812a27b1fc6ed95b)
-### helm/cilium 安装设计镜像参数参考列表
+
+#### 镜像参数参考列表
+
+helm/cilium 安装设计镜像参数参考列表：
 
 <table class="relative-table wrapped confluenceTable" style="width: 190.636%;"><colgroup><col style="width: 9.01714%;"><col style="width: 12.669%;"><col style="width: 2.75023%;"><col style="width: 75.5186%;"></colgroup><tbody><tr><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>image</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>Agent container image.</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>object</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p><code>{"digest":"","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/cilium","tag":"v1.16.5","useDigest":false}</code></p></td></tr><tr><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>imagePullSecrets</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>Configure image pull secrets for pulling container images</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>list</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p><code>[]</code></p></td></tr><tr><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>preflight.image</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>Cilium pre-flight image.</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>object</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p><code>{"digest":"","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/cilium","tag":"v1.16.5","useDigest":false}</code></p></td></tr><tr><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>certgen</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>Configure certificate generation for Hubble integration. If hubble.tls.auto.method=cronJob, these values are used for the Kubernetes CronJob which will be scheduled regularly to (re)generate any certificates not provided manually.</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>object</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p><code>{"affinity":{},"annotations":{"cronJob":{},"job":{}},"extraVolumeMounts":[],"extraVolumes":[],"image":{"digest":"sha256:169d93fd8f2f9009db3b9d5ccd37c2b753d0989e1e7cd8fe79f9160c459eef4f","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/certgen","tag":"v0.2.0","useDigest":true},"podLabels":{},"tolerations":[],"ttlSecondsAfterFinished":1800}</code></p></td></tr><tr><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>clustermesh.apiserver.image</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>Clustermesh API server image.</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>object</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p><code>{"digest":"","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/clustermesh-apiserver","tag":"v1.16.5","useDigest":false}</code></p></td></tr><tr><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>envoy.image</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>Envoy container image.</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>object</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p><code>{"digest":"sha256:709c08ade3d17d52da4ca2af33f431360ec26268d288d9a6cd1d98acc9a1dced","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/cilium-envoy","tag":"v1.30.8-1733837904-eaae5aca0fb988583e5617170a65ac5aa51c0aa8","useDigest":true}</code></p></td></tr><tr><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>hubble.relay.image</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>Hubble-relay container image.</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>object</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p><code>{"digest":"","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/hubble-relay","tag":"v1.16.5","useDigest":false}</code></p></td></tr><tr><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>hubble.ui.backend.image</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>Hubble-ui backend image.</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>object</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p><code>{"digest":"sha256:0e0eed917653441fded4e7cdb096b7be6a3bddded5a2dd10812a27b1fc6ed95b","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/hubble-ui-backend","tag":"v0.13.1","useDigest":true}</code></p></td></tr><tr><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>hubble.ui.frontend.image</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>Hubble-ui frontend image.</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>object</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p><code>{"digest":"sha256:e2e9313eb7caf64b0061d9da0efbdad59c6c461f6ca1752768942bfeda0796c6","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/hubble-ui","tag":"v0.13.1","useDigest":true}</code></p></td></tr><tr><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>nodeinit.image</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>node-init image.</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>object</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p><code>{"digest":"sha256:8d7b41c4ca45860254b3c19e20210462ef89479bb6331d6760c4e609d651b29c","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/startup-script","tag":"c54c7edeab7fde4da68e59acd319ab24af242c3f","useDigest":true}</code></p></td></tr><tr><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>operator.image</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>cilium-operator image.</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>object</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p><code>{"alibabacloudDigest":"","awsDigest":"","azureDigest":"","genericDigest":"","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/operator","suffix":"","tag":"v1.16.5","useDigest":false}</code></p></td></tr><tr><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>preflight.image</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>Cilium pre-flight image.</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p>object</p></td><td colspan="1" rowspan="1" style="vertical-align: top;" class="confluenceTd"><p><code>{"digest":"","override":null,"pullPolicy":"IfNotPresent","repository":"quay.io/cilium/cilium","tag":"v1.16.5","useDigest":false}</code></p></td></tr></tbody></table>
 
-# 二、cilium与kata配合使用，暂未详细调研
+## Cilium 与 Kata 配合使用
+
+暂未详细调研。
 
 参考文档：[https://docs.cilium.io/en/stable/network/kubernetes/kata/#kata-containers-with-cilium](https://docs.cilium.io/en/stable/network/kubernetes/kata/#kata-containers-with-cilium)
 
-# 三、使用外部ETCD存储cilium元数据
+## 使用外部 etcd 存储 Cilium 元数据
 
-## 安装时指定外部etcd端点
+### 指定外部 etcd 端点
 
 helm install cilium cilium/cilium \--version 1.14.4
 \--namespace kube-system
@@ -158,7 +174,7 @@ helm install cilium cilium/cilium \--version 1.14.4
 \--set "etcd.endpoints\[2\]\=[http://etcd-endpoint3:2379](http://etcd-endpoint3:2379/)"
 \--set identityAllocationMode=kvstore
 
-## 开启etcd的tls
+### 创建 TLS 证书 Secret
 
 使用根证书权限、客户端密钥和 etcd 证书创建一个secret
 
@@ -167,7 +183,9 @@ kubectl create secret generic \-n kube-system cilium-etcd-secrets
 \--from-file=etcd-client.key=client.key
 \--from-file=etcd-client.crt=client.crt
 
-## 为 etcd 启用 SSL， etcd 端点 URL 修改为 https
+### 启用 SSL
+
+为 etcd 启用 SSL， etcd 端点 URL 修改为 https
 
 helm install cilium cilium/cilium \--version 1.14.4
 \--namespace kube-system
@@ -177,11 +195,11 @@ helm install cilium cilium/cilium \--version 1.14.4
 \--set "etcd.endpoints\[1\]\=[https://etcd-endpoint2:2379](https://etcd-endpoint2:2379/)"
 \--set "etcd.endpoints\[2\]\=[https://etcd-endpoint3:2379](https://etcd-endpoint3:2379/)"
 
-# 四、与istio共同使用
+## 与 Istio 共同使用
 
-## [参考文档](https://docs.cilium.io/en/stable/network/servicemesh/istio/#gsg-istio)
+[参考文档](https://docs.cilium.io/en/stable/network/servicemesh/istio/#gsg-istio)
 
-## cilium适配istio相关配置
+### Cilium 适配配置
 
 istio会将POD的流量通过iptable代理到边车容器或者节点代理cilium在开启kubeProxyReplacement时，可能会中断相关代理流量
 
@@ -192,44 +210,59 @@ helm upgrade cilium cilium/cilium --version 1.16.4 \
    --set socketLB.hostNamespaceOnly true \
    --set cni.exclusive false
 ```
-## istio相关配置
+
+### Istio 相关配置
 
 [参考文档](https://docs.cilium.io/en/stable/network/servicemesh/istio/#istio-configuration)
 
 - Sidecar: 通过在 Istio 的 PeerAuthentication 下配置 mTLS.mode = DISABLE，为希望用 Cilium L7 策略管理的工作负载禁用 Istio mTLS，Istio [PeerAuthentication](https://istio.io/latest/docs/reference/config/security/peer_authentication/#PeerAuthentication).
 - Ambient: 通过从名称空间中移除 Istio.io/dataplane-mode 标签，或者在你希望用 Cilium l7 管理的 pods 上标注 “禁用”，从而从 Istio 环境中移除你希望用 Cilium l7 管理的工作负载 ambient.Istio.io/redirection
 
-# 五、替换kube-proxy
+## 替换 kube-proxy
 
-## [参考文档](https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/#kube-proxy-hybrid-modes)
+[参考文档](https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/#kube-proxy-hybrid-modes)
 
-## `安装cilium 开启替换kube-proxy特性`
+### 安装与状态检查
 
-`helm install cilium cilium/cilium --set kubeProxyReplacement=true --namespace kube-system cilium install --set kubeProxyReplacement=true --set=ipam.operator.clusterPoolIPv4PodCIDRList="10.244.0.0/16"`
+安装cilium 开启替换kube-proxy特性：
 
-## `查看cilium状态 KubeProxyReplacement: Strict`
+```bash
+helm install cilium cilium/cilium --set kubeProxyReplacement=true --namespace kube-system cilium install --set kubeProxyReplacement=true --set=ipam.operator.clusterPoolIPv4PodCIDRList="10.244.0.0/16"
+```
 
-`kubectl -n kube-system exec ds/cilium -- cilium status | grep KubeProxyReplacement`
+查看cilium状态 KubeProxyReplacement: Strict：
 
-## `状态详情`
+```bash
+kubectl -n kube-system exec ds/cilium -- cilium status | grep KubeProxyReplacement
+```
 
-## `kubectl -n kube-system exec ds/cilium -- cilium status --verbose`
+状态详情：
 
-## `idtable查看是否有kube-proxy转发的service`
+```bash
+kubectl -n kube-system exec ds/cilium -- cilium status --verbose
+```
 
-`iptables-save | grep KUBE-SVC`
+### 查看转发规则
 
-## `bpf转发的service 列表`
+idtable查看是否有kube-proxy转发的service：
 
-`kubectl -n kube-system exec ds/cilium -- cilium service list`
+```bash
+iptables-save | grep KUBE-SVC
+```
 
-# 六、cilium ingress
+bpf转发的service 列表：
 
-## [参考文档](https://docs.cilium.io/en/v1.14/network/servicemesh/ingress/)
+```bash
+kubectl -n kube-system exec ds/cilium -- cilium service list
+```
 
-## 前置条件：需开启kube-proxy替换
+## Cilium Ingress
 
-## helm参数
+[参考文档](https://docs.cilium.io/en/v1.14/network/servicemesh/ingress/)
+
+前置条件：需开启kube-proxy替换
+
+### Helm 安装参数
 
 ```
 helm upgrade cilium cilium/cilium --version 1.16.4 \
@@ -244,17 +277,24 @@ helm upgrade cilium cilium/cilium \
     --set ingressController.enabled=true \
     --set ingressController.loadbalancerMode=shared
 ```
-## cilium upgrade 会覆盖之前的参数 注意保存之前的安装命令
+
+### 升级与配置
+
+cilium upgrade 会覆盖之前的参数 注意保存之前的安装命令
 
 `cilium upgrade --version 1.14.17 \ --set kubeProxyReplacement=true \ --set ingressController.enabled=true \   --set ingressController.loadbalancerMode=dedicated`
 
-## `通过``kube-system / cilium-config （configmap），配置ingressclass的Name，tls开启等`
+通过 `kube-system / cilium-config`（configmap），配置ingressclass的Name，tls开启等
 
-# 七、`TroubleShooting`
+## 故障排查
 
-## 注意看agent启动日志，可以看到agent的所有参数
+注意看agent启动日志，可以看到agent的所有参数
 
-## failed to start: daemon creation failed: failed to detect devices: unable to determine direct routing device. Use --direct-routing-device to specify it\\nfailed to stop: unable to find controller ipcache-inject-labels
+### 无法识别路由设备
+
+```text
+failed to start: daemon creation failed: failed to detect devices: unable to determine direct routing device. Use --direct-routing-device to specify it\\nfailed to stop: unable to find controller ipcache-inject-labels
+```
 
 在  kube-system / cilium-config （configmap）指定主网卡
 
@@ -262,19 +302,22 @@ helm upgrade cilium cilium/cilium \
 direct-routing-device: "eth0"
 devices: "eth0
 ```
-# 八、其他参考文档
 
-## [agent启动参数参考](https://docs.cilium.io/en/stable/cmdref/cilium-agent/#cilium-agent)
+## 其他参考文档
 
-## [helm安装参数参考](https://docs.cilium.io/en/stable/helm-reference/)
+- [agent启动参数参考](https://docs.cilium.io/en/stable/cmdref/cilium-agent/#cilium-agent)
 
-## [元数据KV存储参考](https://docs.cilium.io/en/stable/kvstore/)
+- [helm安装参数参考](https://docs.cilium.io/en/stable/helm-reference/)
 
-# 九、内核情况整理
+- [元数据KV存储参考](https://docs.cilium.io/en/stable/kvstore/)
 
-## 主要考虑centos内核升级
+## 内核情况整理
 
-## [el官方内核库](http://mirrors.coreix.net/elrepo-archive-archive/kernel/el7/x86_64/RPMS/)
+### CentOS 内核升级
+
+主要考虑centos内核升级
+
+[el官方内核库](http://mirrors.coreix.net/elrepo-archive-archive/kernel/el7/x86_64/RPMS/)
 
 kernel-ml 中的ml是英文【 mainline stable 】的缩写，是最新的稳定主线版本。
 
@@ -285,8 +328,6 @@ kernel-lt 中的lt是英文【 long term support 】的缩写，是长期支持�
 - 6.1.12
 - 6.6.9
 
-##
-
-## cilium功能对应内核版本
+### Cilium 功能对应内核版本
 
 <table class="wrapped confluenceTable"><colgroup><col style="width: 54.0pt;"> <col style="width: 145.5pt;"> <col style="width: 100.25pt;"> <col style="width: 296.25pt;"></colgroup><tbody><tr><td class="confluenceTd"><span class="font0">功能</span></td><td class="confluenceTd"><span class="font0">说明</span></td><td class="confluenceTd"><span class="font0">建议内核版本</span></td><td class="confluenceTd"><br></td></tr><tr><td class="confluenceTd"><span class="font0">cilium</span></td><td class="confluenceTd"><span class="font0">基础ebpf功能</span></td><td class="confluenceTd">4.15</td><td class="confluenceTd"><br></td></tr><tr><td class="confluenceTd"><span class="font0">replace kube-proxy</span></td><td class="confluenceTd">替换kube-proxy</td><td class="confluenceTd">v4.19.57<br>v5.1.16<br>v5.2.0<br>以上版本<br>---<br>v5.3<br>v5.8<br>以上性能更好</td><td class="confluenceTd"><a class="external-link" href="https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/#kubernetes-without-kube-proxy" rel="nofollow">Kubernetes Without kube-proxy</a></td></tr><tr><td class="confluenceTd"><span class="font0">ingress</span></td><td class="confluenceTd">需开启kube-proxy替换</td><td style="text-align: center;" class="confluenceTd">-</td><td class="confluenceTd"><a class="external-link" href="https://docs.cilium.io/en/stable/network/servicemesh/ingress/" rel="nofollow">Kubernetes Ingress Support</a></td></tr><tr><td class="confluenceTd">Gateway API</td><td class="confluenceTd">需开启kube-proxy替换</td><td style="text-align: center;" class="confluenceTd">-</td><td class="confluenceTd"><a class="external-link" href="https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/" rel="nofollow">Gateway API Support</a></td></tr><tr><td class="confluenceTd">7层流量处理</td><td class="confluenceTd">需开启kube-proxy替换</td><td style="text-align: center;" class="confluenceTd">-</td><td class="confluenceTd"><a class="external-link" href="https://docs.cilium.io/en/stable/network/servicemesh/envoy-circuit-breaker/#l7-circuit-breaking" rel="nofollow">熔断</a></td></tr><tr><td class="confluenceTd"><span class="font0">IP透传</span></td><td class="confluenceTd"><br></td><td style="text-align: center;" class="confluenceTd">-</td><td class="confluenceTd"><br></td></tr><tr><td class="confluenceTd">node-ipam</td><td class="confluenceTd"><br></td><td style="text-align: center;" class="confluenceTd">-</td><td class="confluenceTd"><br></td></tr><tr><td class="confluenceTd">整合istio</td><td class="confluenceTd"><br></td><td style="text-align: center;" class="confluenceTd">-</td><td class="confluenceTd"><a class="external-link" href="https://docs.cilium.io/en/stable/network/servicemesh/istio/" rel="nofollow">Integration with Istio</a></td></tr></tbody></table>

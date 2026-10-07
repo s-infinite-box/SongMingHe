@@ -12,9 +12,11 @@ tags:
 draft: false
 ---
 
-## 搜了下中文社区的资料,没找到相关的内容，自己探索了几次找到了方法，贴出来大家参考
+搜了下中文社区的资料,没找到相关的内容，自己探索了几次找到了方法，贴出来大家参考
 
-## 直接贴代码
+## 获取字段类型
+
+直接贴代码：
 
 ```rust
 use proc_macro2::Ident;
@@ -42,9 +44,11 @@ fn get_ield_type(fields: IntoIter<Field>) -> Vec<String> {
 }
 ```
 
-### 这个mod里还有其他逻辑，use引入明显有冗余，这个我就不做处理了，可以不用我这个use，create引入过程宏三件套直接来自己引入
+这个mod里还有其他逻辑，use引入明显有冗余，这个我就不做处理了，可以不用我这个use，create引入过程宏三件套直接来自己引入
 
-### 我这里是derive宏标记了下面这个结构体
+### 示例结构体与返回结果
+
+我这里是derive宏标记了下面这个结构体
 
 ```
 pub struct Model {
@@ -58,26 +62,28 @@ pub struct Model {
 }
 ```
 
-### 函数返回会得到类似这样的vec:
+函数返回会得到类似这样的vec:
 
 ```
 ["Option", "Uuid", "DateTime", "String", "DateTime", "String", "i32"]
 ```
 
-## 补充一个过程宏调试的方法
+## 过程宏调试
 
-### 之前调试的时候基本只是看编译报错，但是这次找类型就想找一个能断电DEBUG或者打印信息的方式，最终尝试了两个方式可以
+之前调试的时候基本只是看编译报错，但是这次找类型就想找一个能断电DEBUG或者打印信息的方式，最终尝试了两个方式可以
 
 1. 直接  println!() 宏，这个方式可以在编译的时候打印内容到控制台
 2. 另一种是直接 panic!()，这个方式明显也可以
 
-### 目前我是打印或者panic，然后写一个test标记的fn，然后cargo  test 对应的方法
+目前我是打印或者panic，然后写一个test标记的fn，然后cargo  test 对应的方法
 
-### 应该还有更优雅，甚至可以直接DEBUG的方法，期待大佬们的分享，我也相当于抛砖引玉了
+应该还有更优雅，甚至可以直接DEBUG的方法，期待大佬们的分享，我也相当于抛砖引玉了
 
-## 再补充一个Option<String>对应println! 出来syn::Path的类型格式给大家参考
+## 解析 syn::Path 与泛型参数
 
-### 我手动缩进了一下，两个::的前后表示枚举及对应类型
+再补充一个Option<String>对应println! 出来syn::Path的类型格式给大家参考
+
+我手动缩进了一下，两个::的前后表示枚举及对应类型
 
 ```
 syn::Path {
@@ -115,13 +121,15 @@ syn::Path {
 }
 ```
 
-### 这个是clion中的代码截图，IDE中可以直接看到field中每解析一步，对应的类型
+### 类型解析路径
+
+这个是clion中的代码截图，IDE中可以直接看到field中每解析一步，对应的类型
 
 ![在这里插入图片描述](685ba6a7040a45db849ea087c66640b3.png)
 
-### Field ==> Type::Path(TypePath) ==> Path ==> Punctuated<PathSegment, PathSep> ==> PathSegment ==> ident
+`Field ==> Type::Path(TypePath) ==> Path ==> Punctuated<PathSegment, PathSep> ==> PathSegment ==> ident`
 
-### 其中 Punctuated本质是一个vec
+其中 Punctuated本质是一个vec
 
 ```rust
 pub struct Punctuated<T, P> {
@@ -130,7 +138,9 @@ pub struct Punctuated<T, P> {
 }
 ```
 
-### PathSegment除了ident作为当前的类型名以外，还有一个arguments字段，类型是PathArguments枚举，
+### 泛型参数与类型嵌套
+
+PathSegment除了ident作为当前的类型名以外，还有一个arguments字段，类型是PathArguments枚举，
 
 ```rust
 #[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
@@ -171,6 +181,8 @@ pub enum GenericArgument {
 }
 ```
 
-### 而AngleBracketedGenericArguments类型再进去还会出现Type类型，实现类型的嵌套
+而AngleBracketedGenericArguments类型再进去还会出现Type类型，实现类型的嵌套
 
-## TODO，每搞清楚为啥segments本身是一个数组，猜测是处理泛型用的，必须rust可以像python的union一样给泛型加多个特征实现，比如`T: Send + Sync`，待后续验证一下
+## 待验证的问题
+
+TODO，每搞清楚为啥segments本身是一个数组，猜测是处理泛型用的，必须rust可以像python的union一样给泛型加多个特征实现，比如`T: Send + Sync`，待后续验证一下

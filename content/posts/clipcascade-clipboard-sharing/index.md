@@ -13,9 +13,11 @@ tags:
 draft: false
 ---
 
-# “win”和“linux-wayland”通过deskflow共享键鼠，解决剪切板不能共享的问题
+“win”和“linux-wayland”通过deskflow共享键鼠，解决剪切板不能共享的问题
 
-## 先说背景，不想听故事可跳过😀
+## 背景
+
+先说背景，不想听故事可跳过😀
 
 之前装的E5主机一直将linux作为工作主力机，开发体验非常好；但是公司这边需要各种会议、办公和安全的软件，在linux上就有很多兼任性问题，靠win虚拟机、wine等各种方案适配了很多，后来又装了一台9950X的台式机，系统是windows，开发和办公也都用回windows，之前E5的linux主机就当服务器用了；
 
@@ -27,7 +29,7 @@ draft: false
 
 然后先到github的issues上查了下，果然有人提了相关问题，[官方给出的恢复](https://)：这就是wayland的已知BUG，需要依赖上游解决；问题到这好像是只能等了，但这个官方回复下面有个人说了一嘴可以用kde-connect来共享剪切板，这不正好我用的kubuntu，然后我兴致勃勃给两台主机装上各自OS版本的kde-connect后，发现这玩意虽然可以快速找到局域网内的主机，但是过几秒就会断连，甚至连上就秒断，这个方案也不行；但是这个过程给我打开了新思路，于是我google必应查半天，最终锁定了[ClipCascade](https://github.com/Sathvik-Rao/ClipCascade)
 
-## ClipCascade安装
+## ClipCascade 安装
 
 ClipCascade需要部署一个server记录剪切板内容，然后所有的client通过websocket连接到server来同步剪切板内容
 
@@ -42,7 +44,7 @@ client支持的设备看下面的表（来自官方README）
 | **Image** | ✔      | ✔    | ✔        | ✔        | ✔      |
 | **Files** | ✔      | ✔    | ✔        | ✔        | ✔      |
 
-### server部署
+### 服务端部署
 
 ```bash
 docker run \
@@ -54,7 +56,7 @@ docker run \
 sathvikrao/clipcascade
 ```
 
-#### 支持的ENV可以看[官方配置文档](https://github.com/Sathvik-Rao/ClipCascade?tab=readme-ov-file#environment-variables)
+支持的ENV可以看[官方配置文档](https://github.com/Sathvik-Rao/ClipCascade?tab=readme-ov-file#environment-variables)
 
 部署好后可以打开http://localhost:33381/
 
@@ -67,13 +69,17 @@ sathvikrao/clipcascade
 
 点击`connect`表示作为client连接到server，然后可以在右侧输入框输入文本，send就会同步到所有client，在下面channel可以看到刚才send的内容，每次有两条猜测分别是发送和接受的
 
-### windows、linux客户端
+### 客户端下载
 
-#### 根据操作系统和架构到[官方release](https://github.com/Sathvik-Rao/ClipCascade/releases)下载对应包
+根据操作系统和架构到[官方release](https://github.com/Sathvik-Rao/ClipCascade/releases)下载对应包
 
-##### windows就是一个单一exe文件，依赖都在里面，双击直接启动，然后输入server的地址，用户名密码就可以
+### Windows 客户端
 
-##### linux下载好解压开需要通过main.py脚本启动，官方没有打包，需要手动安装各种依赖，这里重点讲一下[官方依赖安装流程](https://github.com/Sathvik-Rao/ClipCascade?tab=readme-ov-file#%EF%B8%8F-linux-desktop-application-gui--%EF%B8%8F-linux-terminal-based-application-cli)以外的处理
+windows就是一个单一exe文件，依赖都在里面，双击直接启动，然后输入server的地址，用户名密码就可以
+
+### Linux 客户端与依赖处理
+
+linux下载好解压开需要通过main.py脚本启动，官方没有打包，需要手动安装各种依赖，这里重点讲一下[官方依赖安装流程](https://github.com/Sathvik-Rao/ClipCascade?tab=readme-ov-file#%EF%B8%8F-linux-desktop-application-gui--%EF%B8%8F-linux-terminal-based-application-cli)以外的处理
 
 ```bash
 # gi安装包处理
@@ -90,4 +96,6 @@ pip3 install websocket-client
 
 ```
 
-#### 可以在各个客户段随便复制点内容，然后在server的web页面上可以看到channel有同步到数据
+## 验证剪贴板同步
+
+可以在各个客户段随便复制点内容，然后在server的web页面上可以看到channel有同步到数据

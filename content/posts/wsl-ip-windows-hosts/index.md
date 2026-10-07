@@ -13,12 +13,12 @@ tags:
 draft: false
 ---
 
-# 思路
+## 思路
 
 之前尝试过几次其他办法，可能操作有误都没正常生效
 后来修改了思路，每次wsl启动的时候执行一个脚本，直接将wsl当前的ip写进windows宿主机的hosts里
 
-# bash代码实现
+## Bash 代码实现
 
 ```shell
 # 主机HOST增加WSL_IP
@@ -55,11 +55,11 @@ command=win_hosts_proc.sh
 
 [微软关于wsl.conf的官方文档](https://learn.microsoft.com/zh-cn/windows/wsl/wsl-config#boot-settings)
 
-# 远程访问wsl
+## 远程访问 WSL
 
-## 看一些场景是需要远程访问wsl中的docker\k3s等容器的端口，这些场景使用加hosts的方法可能不太灵活，需要搭建代理处理
+看一些场景是需要远程访问wsl中的docker\k3s等容器的端口，这些场景使用加hosts的方法可能不太灵活，需要搭建代理处理
 
-## 如果只是需要ssh访问的话，那大可以直接开启windows的ssh服务，然后ssh链接windows后再输入wsl，嫌麻烦可以直接修改下ssh的默认终端程序
+如果只是需要ssh访问的话，那大可以直接开启windows的ssh服务，然后ssh链接windows后再输入wsl，嫌麻烦可以直接修改下ssh的默认终端程序
 
 ```powershell
 # 安装 OpenSSH 客户端
