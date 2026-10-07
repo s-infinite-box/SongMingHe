@@ -52,6 +52,7 @@
 ```bash
 make                   # 构建正式站点到 public/
 make check             # 构建并检查链接、资源、RSS、搜索和旧地址
+make test              # 评论、目录、发布时间、系列排序与缓存版本回归测试
 make serve             # http://localhost:1313/
 make serve-drafts      # 本地预览包含草稿
 make serve PORT=1314    # 使用其他端口

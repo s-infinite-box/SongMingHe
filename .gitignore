@@ -2,6 +2,8 @@
 /public/
 /resources/_gen/
 .hugo_build.lock
+.build-published.csv
+__pycache__/
 /assets/jsconfig.json
 
 # 编辑器 / 系统

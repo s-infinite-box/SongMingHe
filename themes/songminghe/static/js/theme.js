@@ -84,11 +84,7 @@
       document.body.classList.toggle('dark');
       themeToggle.setAttribute('aria-pressed', String(document.body.classList.contains('dark')));
       saveSetting('blog-theme-v2', document.body.classList.contains('dark') ? 'dark' : 'light');
-      const config = document.querySelector('#giscus-config');
-      if (config) {
-        const {lightTheme, darkTheme} = JSON.parse(config.textContent);
-        document.querySelector('.giscus-frame')?.contentWindow.postMessage({giscus: {setConfig: {theme: document.body.classList.contains('dark') ? darkTheme : lightTheme}}}, 'https://giscus.app');
-      }
+      window.blogComments.updateTheme();
     });
     const mobileLayout = matchMedia('(max-width: 720px)');
     document.querySelector('#sidebar-toggle').addEventListener('click', () => {
@@ -187,22 +183,18 @@
       document.querySelector('#reading-percent').textContent = `${Math.round(progress)}%`;
       document.querySelector('#reading-progress').style.width = `${progress}%`;
     }
-    window.addEventListener('scroll', update, {signal, passive: true});
-    window.addEventListener('resize', update, {signal});
+    let frame = 0;
+    function scheduleUpdate() {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        update();
+      });
+    }
+    signal.addEventListener('abort', () => cancelAnimationFrame(frame), {once: true});
+    window.addEventListener('scroll', scheduleUpdate, {signal, passive: true});
+    window.addEventListener('resize', scheduleUpdate, {signal});
     update();
-  }
-  function loadComments() {
-    const container = document.querySelector('#comments');
-    const config = document.querySelector('#giscus-config');
-    if (!container || !config || container.querySelector('script,.giscus-frame')) return;
-    const script = document.createElement('script');
-    script.src = 'https://giscus.app/client.js';
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-    const {lightTheme, darkTheme, ...values} = JSON.parse(config.textContent);
-    values.theme = document.body.classList.contains('dark') ? darkTheme : lightTheme;
-    for (const [key, value] of Object.entries(values)) script.setAttribute('data-' + key, value);
-    container.append(script);
   }
   async function copyText(text) {
     if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
@@ -281,13 +273,16 @@
     setupSearch(signal);
     setupDirectory(signal);
     setupArticle(signal);
-    loadComments();
+    window.blogComments.load();
   }
   setupShell();
   setupPlayer();
   // 独立替换目录，避免切换文章时重建侧栏播放器。
   const swup = new Swup({containers: ['#page-content', '#sidebar-toc'], animationSelector: false, linkSelector: 'a[href]:not([target]):not([download]):not([data-no-swup])'});
-  swup.hooks.on('content:replace', () => pageEvents?.abort(), {before: true});
+  swup.hooks.on('content:replace', () => {
+    pageEvents?.abort();
+    window.blogComments.dispose();
+  }, {before: true});
   swup.hooks.on('page:view', initializePage);
   swup.hooks.on('fetch:error', () => toast('页面加载失败，请重试'));
   initializePage();

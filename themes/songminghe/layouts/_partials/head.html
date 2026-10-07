@@ -2,7 +2,12 @@
 {{ $metadata := partial "metadata.html" . }}<title>{{ $metadata.title }}</title><link rel="canonical" href="{{ $metadata.canonical }}">
 {{ range $metadata.metas }}{{ if eq .attribute "name" }}<meta data-page-meta name="{{ .key }}" content="{{ .content }}">{{ else }}<meta data-page-meta property="{{ .key }}" content="{{ .content }}">{{ end }}{{ end }}
 <link rel="icon" href="{{ (resources.Get site.Params.favicon).RelPermalink }}"><link rel="alternate" type="application/rss+xml" title="{{ site.Title }}" href="{{ "index.xml" | absURL }}">
-<link rel="stylesheet" href="{{ "vendor/aplayer/APlayer.min.css" | relURL }}"><link rel="stylesheet" href="{{ "css/theme.css" | relURL }}"><link rel="stylesheet" href="{{ "css/stack-layout.css" | relURL }}"><link rel="stylesheet" href="{{ "css/reimu-player.css" | relURL }}"><link rel="stylesheet" href="{{ "css/syntax.css" | relURL }}">
-{{/* 内容摘要随主题脚本变化，避免旧脚本缓存延迟生效。 */}}
-{{ $themeVersion := crypto.SHA256 (os.ReadFile "themes/songminghe/static/js/theme.js") }}
-<script src="{{ "js/swup.min.js" | relURL }}" defer></script><script src="{{ "vendor/aplayer/APlayer.min.js" | relURL }}" defer></script><script src="{{ "js/theme.js" | relURL }}?v={{ $themeVersion }}" defer></script>
+{{/* 样式和脚本随内容更新版本，保留原资源路径及 CSS 相对图片地址。 */}}
+{{ range slice "vendor/aplayer/APlayer.min.css" "css/theme.css" "css/stack-layout.css" "css/reimu-player.css" "css/syntax.css" }}
+{{ $version := crypto.SHA256 (os.ReadFile (printf "themes/songminghe/static/%s" .)) }}
+<link rel="stylesheet" href="{{ . | relURL }}?v={{ $version }}">
+{{ end }}
+{{ range slice "js/swup.min.js" "vendor/aplayer/APlayer.min.js" "js/comments.js" "js/theme.js" }}
+{{ $version := crypto.SHA256 (os.ReadFile (printf "themes/songminghe/static/%s" .)) }}
+<script src="{{ . | relURL }}?v={{ $version }}" defer></script>
+{{ end }}

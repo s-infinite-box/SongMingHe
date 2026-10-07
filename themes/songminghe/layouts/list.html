@@ -1,5 +1,10 @@
 {{ define "main" }}
 {{ $posts := .RegularPagesRecursive.ByDate.Reverse }}
+{{ if and (eq .Kind "term") (eq .Data.Singular "series") }}
+{{ $ordered := where $posts "Params.series_order" "ne" nil }}
+{{ $unordered := where $posts "Params.series_order" "eq" nil }}
+{{ $posts = union (sort $ordered "Params.series_order" "asc") $unordered }}
+{{ end }}
 <div class="page-heading"><div><p class="eyebrow">{{ if eq .Kind "term" }}主题索引{{ else }}文章索引{{ end }}</p><h1>{{ .Title }}</h1><p>{{ len $posts }} 篇文章</p></div></div>{{ with .Description }}<p class="series-description">{{ . }}</p>{{ end }}{{ with .Content }}<div class="article-panel series-intro">{{ . }}</div>{{ end }}
 <div class="post-list">{{ range $posts }}{{ partial "card.html" (dict "page" . "pinned" false) }}{{ end }}</div>
 {{ end }}

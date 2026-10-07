@@ -64,6 +64,8 @@ draft: true
 
 连续文章按需增加 `series` 和 `series_order`。现有内核学习系列使用 `aa-kernel-study`，系列介绍见 [`content/series/aa-kernel-study/_index.md`](../content/series/aa-kernel-study/_index.md)。零散文章按主题归类即可。
 
+系列页面按数字 `series_order` 升序展示，未填写序号的文章放在最后，按日期倒序排列。首页、最新文章和分类仍按原规则展示。设置 `publishDate` 可以指定实际发布时间；默认采用 `date`，时区为 `Asia/Shanghai`。GitHub Pages 在下一次构建时发布到期文章，设置未来时间不会自动触发定时部署。
+
 ## 封面与正文图片
 
 封面集中放在 `assets/img/covers/`，在 frontmatter 中写 `image: img/covers/<文件名>`；正文照片和截图放在文章目录中，使用 `![说明](pic.png)` 引用。文件名区分大小写，引用共用封面时不加 `assets/` 前缀。
@@ -132,6 +134,8 @@ make               # 正式环境构建
 ```
 
 默认预览地址为 <http://localhost:1313/>。页面检查覆盖首页卡片、文章正文、封面、图片、分类标签、系列入口和 Markdown 导出。`make serve` 启用完整重建与内存渲染，内容修改后可查看刷新效果。
+
+正式发布前运行 `make check`，它包含 Node.js 标准测试模块及 Python 标准库回归测试，不需安装额外依赖。构建和 `hugo list published` 使用相同完整时刻，已发布清单保存在忽略提交的 `.build-published.csv`。需要复现定时发布问题时使用 `make check BUILD_CLOCK=2026-10-08T01:00:00+08:00`，不要另向 `HUGO_FLAGS` 传入不同的 `--clock`。
 
 没有 Makefile 的旧检出可以直接运行以下命令；Hugo 版本要求和主题初始化见 [README 本地预览](../README.md#本地预览)。
 

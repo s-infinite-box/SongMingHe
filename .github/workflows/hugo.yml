@@ -47,9 +47,7 @@ jobs:
           HUGO_ENVIRONMENT: production
           TZ: Asia/Shanghai
         run: |
-          hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
-          python3 scripts/prepare-legacy-paths.py
-          python3 scripts/verify-build.py
+          make check HUGO_FLAGS='--baseURL "${{ steps.pages.outputs.base_url }}/"'
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

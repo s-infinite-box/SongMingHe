@@ -1,14 +1,21 @@
 #!/usr/bin/env python3
 """核验正式构建的文章、导出、订阅、搜索、旧链接和本地资源，仅使用标准库。"""
 import argparse
+import csv
+import hashlib
 import json
 import re
-from datetime import datetime
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import unquote, urljoin, urlparse
-from zoneinfo import ZoneInfo
+from urllib.parse import parse_qs, unquote, urljoin, urlparse
 import xml.etree.ElementTree as ET
+
+
+def published_posts(manifest):
+    """使用与构建同一时刻的 Hugo 清单，遵循其发布时间、时区和草稿规则。"""
+    with manifest.open(newline='', encoding='utf-8') as source:
+        return [row for row in csv.DictReader(source)
+                if row['kind'] == 'page' and row['section'] == 'posts']
 
 
 class Page(HTMLParser):
@@ -77,9 +84,13 @@ def main():
     parser.add_argument('output', nargs='?', default='public', help='构建产物目录')
     parser.add_argument('--baseline', help='可选：迁移前构建目录，用于比较 Markdown 内容')
     parser.add_argument('--baseline-base-url', help='可选：比对时将旧站点地址前缀替换为当前地址')
+    parser.add_argument('--published', default='.build-published.csv', help='同一构建时刻的 hugo list published 清单')
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[1]
     output = Path(args.output).resolve()
+    manifest = Path(args.published)
+    if not manifest.is_file():
+        parser.error('缺少已发布文章清单；请先运行 make build，或通过 --published 指定同一时刻的 Hugo 清单')
     base = re.search(r'^baseURL:\s*(\S+)', (repo / 'hugo.yaml').read_text(), re.M).group(1)
     base_url = urlparse(base)
     base_path = base_url.path
@@ -123,21 +134,25 @@ def main():
             local_target(page.metas['og:image'], origin)
             check(len(page.navigation) == 5, f'主导航不是五项：{relative}')
             check(len(page.feed_nodes) == 1, f'RSS 发现入口缺失或重复：{relative}')
+            for tag, url in page.links:
+                parsed = urlparse(url)
+                if parsed.path.endswith(('.css', '.js')) and parsed.netloc in ('', base_url.netloc):
+                    resource = output / unquote(parsed.path[len(base_path):])
+                    if resource.is_file():
+                        expected = hashlib.sha256(resource.read_bytes()).hexdigest()
+                        check(parse_qs(parsed.query).get('v') == [expected], f'样式或脚本内容指纹错误：{relative}：{url}')
 
     for css in output.rglob('*.css'):
         for url in re.findall(r'url\([\"\']?([^\)\"\']+)[\"\']?\)', css.read_text()):
             local_target(url, urljoin(base, str(css.relative_to(output))))
 
-    today = datetime.now(ZoneInfo('Asia/Shanghai')).date()
     posts = []
-    for source in (repo / 'content/posts').glob('*/index.md'):
+    for entry in published_posts(manifest):
+        source = repo / entry['path']
         text = source.read_text()
         frontmatter = text.split('---', 2)[1]
-        date = re.search(r'^date:\s*[\"\']?(\d{4}-\d{2}-\d{2})', frontmatter, re.M)
-        if re.search(r'^draft:\s*true\s*$', frontmatter, re.M) or (date and datetime.fromisoformat(date.group(1)).date() > today):
-            continue
-        relative = f'posts/{source.parent.name}/index.html'
-        posts.append(urljoin(base, relative.removesuffix('index.html')))
+        relative = unquote(urlparse(entry['permalink']).path[len(base_path):]) + 'index.html'
+        posts.append(entry['permalink'])
         check(relative in html_pages, f'文章页遗漏：{relative}')
         exported = output / relative.replace('.html', '.md')
         check(exported.is_file(), f'Markdown 导出遗漏：{relative}')
