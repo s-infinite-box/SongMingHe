@@ -3,13 +3,14 @@
 HUGO ?= hugo
 BIND ?= 127.0.0.1
 PORT ?= 1313
-PREVIEW_URL ?= http://localhost:$(PORT)/SongMingHe/
+PREVIEW_URL ?= http://localhost:$(PORT)/
 HUGO_FLAGS ?=
 
 .PHONY: build check serve serve-drafts clean help
 
 build:
 	HUGO_ENVIRONMENT=production TZ=Asia/Shanghai $(HUGO) --gc --minify $(HUGO_FLAGS)
+	python3 scripts/prepare-legacy-paths.py
 
 check: build
 	python3 scripts/verify-build.py

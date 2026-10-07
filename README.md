@@ -2,7 +2,9 @@
 
 基于 Hugo 和仓库内的个人主题 `songminghe`，通过 GitHub Actions 发布到 GitHub Pages。主题按已确认的个人博客 Demo 迁移，采用左侧菜单和右侧文章的两栏布局。
 
-在线地址：https://s-infinite-box.github.io/SongMingHe/
+在线地址：https://s-infinite-box.github.io/
+
+仓库名为 `s-infinite-box.github.io`，本地工作目录仍为 `_sub_mod/SongMingHe`。根地址迁移与旧链接兼容见 [迁移说明](docs/root-domain-migration.md)。
 
 写作与平台分发见 [博客写作与发布流程](docs/blog-workflow.md)；主题迁移与验收见 [个人主题迁移](docs/theme-migration.md)。
 
@@ -51,7 +53,7 @@
 ```bash
 make                   # 构建正式站点到 public/
 make check             # 构建并检查链接、资源、RSS、搜索和旧地址
-make serve             # http://localhost:1313/SongMingHe/
+make serve             # http://localhost:1313/
 make serve-drafts      # 本地预览包含草稿
 make serve PORT=1314    # 使用其他端口
 make clean             # 清理构建产物
@@ -107,6 +109,8 @@ draft: true
 文章页提供“复制 Markdown”和“查看 Markdown 源码”，导出地址仍为 `/posts/<slug>/index.md`。正文不含 frontmatter，单篇相对配图转换为绝对 URL，便于向 CSDN 等平台分发。切换主题不改变原来的导出内容。
 
 评论使用原仓库的 giscus / GitHub Discussions，配置集中在 `hugo.yaml`。点击“加载评论”后获取评论组件；跨页重新加载对应文章评论，明暗配色会同步。
+
+根地址迁移后以 `specific` 和原 `SongMingHe/posts/<slug>/` 检索词关联讨论，仓库 ID 与分类 ID 保持原值。构建后 `scripts/prepare-legacy-paths.py` 为旧项目路径补页面跳转及资源兼容文件。
 
 全文订阅地址仍为 `/index.xml`，文章、分类、标签和系列的订阅入口也保留。分享元信息同时包含标题、摘要和封面，连续导航后同步更新。
 

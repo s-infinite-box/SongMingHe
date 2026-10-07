@@ -1,5 +1,5 @@
 # 宋明河个人博客；文章和配图仍由原仓库维护。
-baseURL: https://s-infinite-box.github.io/SongMingHe/
+baseURL: https://s-infinite-box.github.io/
 title: 宋明河
 theme: songminghe
 defaultContentLanguage: zh
@@ -112,11 +112,13 @@ params:
     enabled: true
     provider: giscus
     giscus:
-      repo: s-infinite-box/SongMingHe
+      repo: s-infinite-box/s-infinite-box.github.io
       repoID: R_kgDOM4eCsw
       category: Announcements
       categoryID: DIC_kwDOM4eCs84DE_rT
-      mapping: pathname
+      mapping: specific
+      # 保留原 pathname 的讨论检索词，迁移地址后仍关联原评论。
+      termPrefix: SongMingHe/
       strict: 0
       reactionsEnabled: 1
       emitMetadata: 0

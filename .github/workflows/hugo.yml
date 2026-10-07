@@ -49,6 +49,7 @@ jobs:
           TZ: Asia/Shanghai
         run: |
           hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
+          python3 scripts/prepare-legacy-paths.py
           python3 scripts/verify-build.py
 
       - name: Upload artifact

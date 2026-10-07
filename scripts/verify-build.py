@@ -76,6 +76,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('output', nargs='?', default='public', help='构建产物目录')
     parser.add_argument('--baseline', help='可选：迁移前构建目录，用于比较 Markdown 内容')
+    parser.add_argument('--baseline-base-url', help='可选：比对时将旧站点地址前缀替换为当前地址')
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[1]
     output = Path(args.output).resolve()
@@ -147,7 +148,10 @@ def main():
                 check(image.startswith(('https://', 'http://', '/', 'data:')), f'Markdown 配图不是绝对地址：{relative}：{image}')
             if args.baseline:
                 old = Path(args.baseline) / relative.replace('.html', '.md')
-                check(old.is_file() and old.read_bytes() == exported.read_bytes(), f'迁移改变了 Markdown 分发内容：{relative}')
+                previous = old.read_bytes() if old.is_file() else None
+                if previous is not None and args.baseline_base_url:
+                    previous = previous.replace(args.baseline_base_url.encode(), base.encode())
+                check(previous == exported.read_bytes(), f'迁移改变了 Markdown 分发内容：{relative}')
         if 'series:' in frontmatter and relative in html_pages:
             check('article-series' in (output / relative).read_text(), f'系列入口遗漏：{relative}')
 
@@ -161,6 +165,8 @@ def main():
         if html_pages[relative].giscus:
             config = json.loads(html_pages[relative].giscus)
             check(all(config.get(key) for key in ['repo', 'repo-id', 'category', 'category-id', 'mapping', 'lightTheme', 'darkTheme']), f'评论配置缺失：{relative}')
+            check(config.get('repo') == 's-infinite-box/s-infinite-box.github.io', f'评论仓库未更新：{relative}')
+            check(config.get('mapping') == 'specific' and config.get('term') == 'SongMingHe/' + relative.removesuffix('index.html'), f'旧评论检索词发生变化：{relative}')
     for path in ['posts/index.xml', 'categories/index.xml', 'tags/index.xml']:
         entries = ET.parse(output / path).findall('./channel/item')
         check({item.findtext('link') for item in entries} == set(posts), f'汇总订阅未覆盖全部文章：{path}')
@@ -182,7 +188,30 @@ def main():
             path = local_target(audio['src'], base)
             check(path and path[0].is_file() and path[0].stat().st_size > 1024, f'音频资源无效：{track["title"]}')
 
-    result = {'文章数': len(posts), 'HTML页面数': len(html_pages), 'RSS文章数': len(items), '搜索条目数': len(index), '旧分页跳转数': len(legacy), '核验本站资源数': len(checked), '失败': errors}
+    # 根站点必须保留旧项目地址下的页面、导出和所有资源。
+    old_root = output / 'SongMingHe'
+    old_html = 0
+    old_files = 0
+    for source in output.rglob('*'):
+        if not source.is_file() or source.is_relative_to(old_root):
+            continue
+        relative = source.relative_to(output)
+        target = old_root / relative
+        check(target.is_file(), f'旧地址兼容文件遗漏：{relative}')
+        if not target.is_file():
+            continue
+        if source.suffix != '.html':
+            check(source.read_bytes() == target.read_bytes(), f'旧地址资源内容改变：{relative}')
+            old_files += 1
+            continue
+        page = html_pages[str(target.relative_to(output))]
+        old_html += 1
+        check(page.metas.get('robots') == 'noindex,follow' and bool(page.refresh), f'旧页面不是禁止索引的跳转：{relative}')
+        check('location.search+location.hash' in target.read_text(), f'旧页面未保留查询和锚点：{relative}')
+        redirected = local_target(page.refresh.split('url=', 1)[-1], urljoin(base, str(target.relative_to(output))))
+        check(redirected and not redirected[0].is_relative_to(old_root), f'旧页面未跳转到根路径：{relative}')
+
+    result = {'文章数': len(posts), 'HTML页面数': len(html_pages), 'RSS文章数': len(items), '搜索条目数': len(index), '旧分页跳转数': len(legacy), '旧项目页面跳转数': old_html, '旧项目文件数': old_files, '核验本站资源数': len(checked), '失败': errors}
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return bool(errors)
 

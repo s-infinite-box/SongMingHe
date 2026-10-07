@@ -8,7 +8,7 @@
 
 ## 仓库入口与日常步骤
 
-博客仓库位于 `/home/wz/p/pphome/_sub_mod/SongMingHe`，是 `pphome` 的 Git 子模块。站点地址为 [宋明河](https://s-infinite-box.github.io/SongMingHe/)，正式发布分支是博客仓库自己的 `main`。
+博客仓库位于 `/home/wz/p/pphome/_sub_mod/SongMingHe`，是 `pphome` 的 Git 子模块。站点地址为 [宋明河](https://s-infinite-box.github.io/)，正式发布分支是博客仓库自己的 `main`。
 
 | 内容 | 仓库内位置 | 用途 |
 | --- | --- | --- |
@@ -68,7 +68,7 @@ draft: true
 
 封面集中放在 `assets/img/covers/`，在 frontmatter 中写 `image: img/covers/<文件名>`；正文照片和截图放在文章目录中，使用 `![说明](pic.png)` 引用。文件名区分大小写，引用共用封面时不加 `assets/` 前缀。
 
-共用封面由个人主题的 [`cover.html`](../themes/songminghe/layouts/_partials/cover.html) 处理：先查找文章目录中的资源，再查找 `assets/`。可处理的位图会由主题生成适合列表与分享的缩略图；SVG 等资源直接输出。构建结果需要保留 GitHub Pages 的 `/SongMingHe/` 路径。
+共用封面由个人主题的 [`cover.html`](../themes/songminghe/layouts/_partials/cover.html) 处理：先查找文章目录中的资源，再查找 `assets/`。可处理的位图会由主题生成适合列表与分享的缩略图；SVG 等资源直接输出。构建结果使用根路径；原 `/SongMingHe/` 页面与文件地址由构建后的兼容脚本保留。
 
 选择封面时优先检查主体在列表裁剪后是否清楚、标题附近是否拥挤、图片尺寸是否足够。当前内核学习、IO 模型、进程线程文章引用 `Linux.webp`，Kubernetes 升级文章引用 `k8s-flower.svg`。这些是本次选图结果，各篇文章以作者最终设置的 `image` 为准。
 
@@ -131,13 +131,13 @@ make serve PORT=1314
 make               # 正式环境构建
 ```
 
-默认预览地址为 <http://localhost:1313/SongMingHe/>。页面检查覆盖首页卡片、文章正文、封面、图片、分类标签、系列入口和 Markdown 导出。`make serve` 启用完整重建与内存渲染，内容修改后可查看刷新效果。
+默认预览地址为 <http://localhost:1313/>。页面检查覆盖首页卡片、文章正文、封面、图片、分类标签、系列入口和 Markdown 导出。`make serve` 启用完整重建与内存渲染，内容修改后可查看刷新效果。
 
 没有 Makefile 的旧检出可以直接运行以下命令；Hugo 版本要求和主题初始化见 [README 本地预览](../README.md#本地预览)。
 
 ```bash
 hugo server --bind 127.0.0.1 --port 1313 \
-  --baseURL http://localhost:1313/SongMingHe/ \
+  --baseURL http://localhost:1313/ \
   --renderToMemory --disableFastRender
 
 HUGO_ENVIRONMENT=production TZ=Asia/Shanghai hugo --gc --minify
@@ -159,7 +159,7 @@ git push origin HEAD:main
 
 正式构建可以从待发布 Git 提交导出快照，并同时使用该提交固定的主题版本。构建通过的提交应与实际推送的提交一致；构建后又增加需要发布的修改时，重新构建相关最终版本。父仓库的子模块指针和旧目录清理按父仓库的任务范围单独维护。
 
-推送后查看 [GitHub Actions](https://github.com/s-infinite-box/SongMingHe/actions)，确认对应提交的构建和部署成功，再打开线上首页、分类、文章和图片检查实际内容。推送成功只说明源码已上传，部署成功和线上检查才完成站点发布。
+推送后查看 [GitHub Actions](https://github.com/s-infinite-box/s-infinite-box.github.io/actions)，确认对应提交的构建和部署成功，再打开线上首页、分类、文章和图片检查实际内容。推送成功只说明源码已上传，部署成功和线上检查才完成站点发布。
 
 本次曾遇到远端 README 新提交夹带无关的本机配置链接，自动审批拦截了合并提交；移除该链接后继续发布。远端 URL 若含凭据，报告中只保留仓库身份，错误输出先脱敏。
 
@@ -229,7 +229,7 @@ CLI 需要浏览器扩展连接，以及扩展设置中一致的桥接 Token；�
 
 ## 本次记录与临时资料
 
-2026 年 10 月 6 日完成本站更新：17 篇文章、7 个分类、40 个标签，站点标题为「宋明河」。[本次 GitHub Pages 部署](https://github.com/s-infinite-box/SongMingHe/actions/runs/37478273336)成功，随后核验了线上分类、学习方法标签、新文章和封面图片。
+2026 年 10 月 6 日完成本站更新：17 篇文章、7 个分类、40 个标签，站点标题为「宋明河」。[本次 GitHub Pages 部署](https://github.com/s-infinite-box/s-infinite-box.github.io/actions/runs/37478273336)成功，随后核验了线上分类、学习方法标签、新文章和封面图片。
 
 下列路径相对于 `/home/wz/p/pphome`，用于本地追溯；日常操作以当前仓库正文和配置为准。
 
