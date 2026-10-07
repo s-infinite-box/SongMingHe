@@ -1,0 +1,1 @@
+{{ define "main" }}<div class="page-heading"><div><p class="eyebrow">内容索引</p><h1>{{ .Title }}</h1></div></div><div class="taxonomy-grid">{{ range .Pages }}<a href="{{ .RelPermalink }}"><strong>{{ .Title }}</strong><span>{{ len .RegularPages }} 篇文章 →</span></a>{{ end }}</div>{{ end }}

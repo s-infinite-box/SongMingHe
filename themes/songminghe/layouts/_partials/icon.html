@@ -1,0 +1,14 @@
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+{{ if eq . "home" }}<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/>
+{{ else if eq . "clock" }}<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+{{ else if eq . "trend" }}<path d="m3 17 6-6 4 4 8-10M15 5h6v6"/>
+{{ else if eq . "archive" }}<rect x="3" y="3" width="18" height="5" rx="1"/><path d="M5 8v12h14V8M10 12h4"/>
+{{ else if eq . "search" }}<circle cx="10" cy="10" r="6.5"/><path d="m15 15 6 6"/>
+{{ else if eq . "user" }}<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
+{{ else if eq . "mail" }}<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/>
+{{ else if eq . "menu" }}<path d="M4 6h16M4 12h16M4 18h16"/>
+{{ else if eq . "moon" }}<path d="M20 14A9 9 0 0 1 10 3a9 9 0 1 0 10 11z"/>
+{{ else if eq . "arrow" }}<path d="m8 5 7 7-7 7"/>
+{{ else if eq . "back" }}<path d="M20 12H4m6-6-6 6 6 6"/>
+{{ else if eq . "pin" }}<path d="m9 3 6 0-1 6 4 4H6l4-4zM12 13v8"/>
+{{ end }}</svg>

@@ -1,0 +1,1 @@
+{{ define "main" }}{{ $posts := (where site.RegularPages "Section" "posts").ByDate.Reverse }}<div class="page-heading"><div><p class="eyebrow">按发布时间</p><h1>最新文章</h1><p>从最近一篇开始阅读。</p></div><span class="page-count">{{ len $posts }} 篇</span></div><div class="post-list">{{ range $posts }}{{ partial "card.html" (dict "page" . "pinned" false) }}{{ end }}</div>{{ end }}

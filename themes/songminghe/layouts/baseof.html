@@ -1,0 +1,9 @@
+<!doctype html><html lang="zh-CN"><head>
+{{ partial "head.html" . }}</head>
+<body data-base="{{ "" | relURL }}" data-started="{{ hugo.Data.blog.startedAt }}">
+<div class="mobile-sidebar-controls"><button id="sidebar-toggle" type="button" aria-label="展开侧栏" aria-expanded="false" aria-controls="sidebar">{{ partial "icon.html" "menu" }}<span>展开菜单</span></button></div>
+<div class="site-shell">{{ partial "sidebar.html" . }}<div class="main-column"><main id="page-content" tabindex="-1"><script id="page-metadata" type="application/json">{{ partial "metadata.html" . | jsonify | safeJS }}</script>{{ block "main" . }}{{ end }}</main><footer class="page-footer">以文字记录学习，以实践理解技术。</footer></div></div>
+
+<div id="page-loading" aria-hidden="true"></div><div id="toast" role="status"></div>
+<script id="playlist-data" type="application/json">{{ hugo.Data.blog.playlist | jsonify | safeJS }}</script>
+</body></html>

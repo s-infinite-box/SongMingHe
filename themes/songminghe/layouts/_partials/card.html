@@ -1,0 +1,10 @@
+{{ $p := .page }}{{ $cover := partial "cover.html" $p }}
+<article class="post-card{{ if .pinned }} pinned{{ end }}" data-article-url="{{ $p.RelPermalink }}">
+  <div class="post-copy">
+    <div class="post-meta">{{ if .pinned }}<span class="pin-badge">{{ partial "icon.html" "pin" }}置顶</span>{{ end }}<time datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format "2006.01.02" }}</time>{{ with $p.GetTerms "categories" }}<span class="meta-dot">·</span>{{ range . }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}{{ end }}</div>
+    <h2><a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></h2>
+    <p class="post-description">{{ with $p.Description }}{{ . }}{{ else }}{{ $p.Summary | plainify | htmlUnescape | truncate 110 }}{{ end }}</p>
+    <div class="post-bottom"><div class="post-tags">{{ range first 3 ($p.GetTerms "tags") }}<a href="{{ .RelPermalink }}"># {{ .LinkTitle }}</a>{{ end }}</div><span class="post-reading">{{ $p.ReadingTime }} 分钟阅读</span></div>
+  </div>
+  {{ with $cover }}<a class="post-cover" href="{{ $p.RelPermalink }}" aria-label="阅读：{{ $p.Title }}"><img src="{{ . }}" alt="{{ $p.Title }}的封面" loading="lazy"></a>{{ end }}
+</article>

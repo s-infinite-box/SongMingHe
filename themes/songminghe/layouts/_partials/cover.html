@@ -1,0 +1,7 @@
+{{ $url := "" }}{{ with .Params.image }}
+  {{ $resource := $.Resources.GetMatch . }}
+  {{ if not $resource }}{{ $resource = resources.Get . }}{{ end }}
+  {{ with $resource }}
+    {{ if in (slice "image/jpeg" "image/png" "image/webp") .MediaType.Type }}{{ $url = (.Resize "640x").RelPermalink }}{{ else }}{{ $url = .RelPermalink }}{{ end }}
+  {{ else }}{{ $url = . | relURL }}{{ end }}
+{{ end }}{{ return $url }}

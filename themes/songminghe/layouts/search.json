@@ -1,0 +1,5 @@
+{{/* 保留原搜索 JSON 的字段与路径，页面搜索继续使用正文内嵌索引。 */}}
+{{ $entries := slice }}{{ range (where site.RegularPages "Section" "posts").ByDate.Reverse }}
+{{ $entry := dict "title" .Title "date" .Date "permalink" .RelPermalink "content" .Plain }}
+{{ with partial "cover.html" . }}{{ $entry = merge $entry (dict "image" .) }}{{ end }}
+{{ $entries = $entries | append $entry }}{{ end }}{{ $entries | jsonify }}

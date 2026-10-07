@@ -5,11 +5,6 @@ description: 关于本站及作者
 comments: false
 outputs:
   - html
-menu:
-  main:
-    weight: -50
-    params:
-      icon: user
 ---
 
 您好！我是宋明河，欢迎来到我的博客。

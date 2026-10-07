@@ -1,72 +1,65 @@
 # 宋明河的博客
 
-基于 [Hugo](https://gohugo.io/) + [Stack](https://stack.jimmycai.com/) 主题（卡片式三栏布局）的静态博客，通过 GitHub Actions 自动部署到 GitHub Pages。
+基于 Hugo 和仓库内的个人主题 `songminghe`，通过 GitHub Actions 发布到 GitHub Pages。主题按已确认的个人博客 Demo 迁移，采用左侧菜单和右侧文章的两栏布局。
 
-在线地址：<https://s-infinite-box.github.io/SongMingHe/>
+在线地址：https://s-infinite-box.github.io/SongMingHe/
 
-写作与发布的完整步骤见 [博客写作与发布流程](docs/blog-workflow.md)，涵盖素材整理、封面与配图、分类标签、旧文迁移、GitHub Pages 发布，以及 CSDN 和知乎分发。文档末尾说明了当前采用仓库文档、后续增加轻量 skill 的条件。
+写作与平台分发见 [博客写作与发布流程](docs/blog-workflow.md)；主题迁移与验收见 [个人主题迁移](docs/theme-migration.md)。
+
+## 当前主题
+
+- 首页、最新文章、归档、搜索、关于五项导航，两列排列；所有文章列表不分页，置顶只影响首页。
+- 桌面侧栏吸顶；手机默认收起，可通过“展开菜单”打开。文章目录位于左侧社交图标下方。
+- 分类和标签使用折叠分组，展开内容高度上限为 128 像素，超出时显示“查看全部”；分类每行两项。
+- 默认亮色、海岸浪花背景，保留简约山景、蓝调雾山、秋林倒影以及纯色，按钮轮换并保存偏好。
+- 左侧 APlayer 播放本地歌单，默认 No Worries、75% 音量、折叠歌单；使用 Swup 连续导航，切页后音乐继续播放。浏览器限制自动播放时，使用正常播放按钮。
+- 保留全文 RSS、文章系列、giscus 评论、Markdown 导出，以及旧分类标签和分页地址兼容。
+- 站点信息只显示文章数、字数、运行天数和内容更新时间，不记录访客或浏览量，不需要额外统计服务器。
 
 ## 目录结构
 
-```
+```text
 .
-├─ Makefile                       # 正式构建、本地预览与清理命令
-├─ docs/blog-workflow.md          # 可复用的博客写作与发布流程
-├─ hugo.yaml                      # 站点配置（标题、菜单、侧栏、小组件、评论）
-├─ content/
-│  ├─ _index.md                   # 首页（只声明菜单项）
-│  ├─ posts/                      # 文章，每篇一个目录（page bundle）
-│  │  └─ <slug>/
-│  │     ├─ index.md              # 正文
-│  │     └─ *.png                 # 该文章用到的图片，正文中直接写 ![](xxx.png)
-│  └─ page/                       # 独立页面：归档、搜索、关于（URL 直接挂在根路径）
-├─ layouts/
-│  ├─ single.markdown.md          # 文章的 Markdown 输出模板（供"复制 Markdown"使用）
-│  └─ _partials/article/components/
-│     ├─ markdown-tools.html      # 文章底部"复制 Markdown"工具栏
-│     └─ footer.html              # 覆盖主题的文章页脚，用于插入上面的工具栏
-├─ assets/
-│  ├─ scss/custom.scss            # 自定义样式（主题自动引入）
-│  ├─ icons/mail.svg              # 侧栏邮箱图标（主题内置图标之外的补充）
-│  └─ img/
-│     ├─ avatar.jpg               # 头像
-│     └─ covers/                  # 按技术区分的共用文章封面
-├─ themes/hugo-theme-stack/       # 主题（git submodule）
-└─ .github/workflows/hugo.yml     # 构建 + 部署
+├── hugo.yaml                 # 正式 URL、导航、评论、输出格式和日期策略
+├── Makefile                  # 构建、检查与本地预览
+├── content/
+│   ├── posts/<slug>/          # 文章正文和单篇配图
+│   ├── page/                 # 最新文章、归档、搜索、关于
+│   ├── categories/、tags/    # 分类标签入口与手工别名
+│   └── series/               # 文章系列介绍
+├── assets/
+│   ├── img/                  # 头像与共用技术封面
+│   └── diagrams/             # 可编辑图表源文件
+├── data/blog.json            # 歌单、首页置顶和站点运行起点
+├── static/
+│   ├── music/                # 转码音频与专辑封面
+│   ├── media/                # 背景图片及来源说明
+│   └── .../page/<n>/         # 65 个旧分页静态跳转
+├── layouts/single.markdown.md # Markdown 导出模板
+├── themes/songminghe/        # 个人主题模板、样式、脚本和组件许可
+├── themes/hugo-theme-stack/  # 保留的旧主题子模块，供比对与回退
+├── scripts/verify-build.py   # 构建产物兼容检查，仅使用 Python 标准库
+├── scripts/legacy-pages.json # 需要保留的旧分页地址清单
+├── docs/                     # 写作流程和迁移验收记录
+└── .github/workflows/hugo.yml
 ```
 
-## 本地预览
+## 构建与预览
 
-安装 Hugo extended 版（>= 0.157）：
+建议使用与 CI 相同的 Hugo **0.165.0 extended**。本地检查脚本只需要 Python 3.9 或更新版本的标准库。
 
 ```bash
-# Fedora
-sudo dnf install hugo
-# 或从 https://github.com/gohugoio/hugo/releases 下载 hugo_extended_*_linux-amd64.tar.gz
+make                   # 构建正式站点到 public/
+make check             # 构建并检查链接、资源、RSS、搜索和旧地址
+make serve             # http://localhost:1313/SongMingHe/
+make serve-drafts      # 本地预览包含草稿
+make serve PORT=1314    # 使用其他端口
+make clean             # 清理构建产物
 ```
 
-首次克隆后拉取主题：
+可用 `HUGO=/path/to/hugo` 选择指定二进制。GitHub Actions 固定使用 0.165.0，构建后也会运行检查脚本，检查失败则不上传站点产物。
 
-```bash
-git submodule update --init --recursive
-```
-
-启动预览（默认 <http://localhost:1313/SongMingHe/>）：
-
-```bash
-make serve         # 预览已发布文章
-make serve-drafts  # 同时预览草稿
-```
-
-需要使用其他端口时运行 `make serve PORT=1314`，预览地址会同步调整为 <http://localhost:1314/SongMingHe/>。
-
-其他常用命令：
-
-```bash
-make        # 按正式环境构建，输出到 public/
-make help   # 查看命令与可覆盖变量
-make clean  # 清理 public/ 和 resources/_gen/ 中的生成产物
-```
+个人主题没有 npm 构建步骤，APlayer 和 Swup 浏览器资源已保存在仓库中。旧 Stack 子模块暂时保留；当前构建不依赖它，迁移后无需升级旧主题。
 
 ## 写文章
 
@@ -74,87 +67,53 @@ make clean  # 清理 public/ 和 resources/_gen/ 中的生成产物
 hugo new posts/my-post/index.md
 ```
 
-会在 `content/posts/my-post/index.md` 生成文件，补上 frontmatter 后开始写正文：
+正文位于 `content/posts/<slug>/index.md`，URL 保持 `/posts/<slug>/`。
 
 ```yaml
 ---
 title: "文章标题"
-description: "一句话摘要，显示在列表卡片上（可选）"
-date: 2026-09-06T18:00:00+08:00
-image: cover.png      # 封面图，放在文章目录下（可选，不写则卡片无图）
+description: "一句话摘要"
+date: 2026-10-07T00:00:00+08:00
+image: img/covers/Linux.webp
 categories:
-  - Linux内核         # 一篇一个主题分类
+  - Linux内核
 tags:
-  - Linux             # 按文章的具体技术与主题填写
-draft: false          # true 时不会发布
+  - Linux
+  - Rust
+series:
+  - aa-kernel-study
+series_order: 2
+draft: true
 ---
 ```
 
-- 目录名（slug）用英文，它会成为 URL：`/posts/my-post/`
-- 图片放在文章同一目录下，正文中用相对路径引用：`![说明](pic.png)`
-- 单篇关闭评论：frontmatter 加 `comments: false`
-- 单篇关闭目录：frontmatter 加 `toc: false`
+一篇文章通常选择一个主题分类、2–5 个具体标签；连载使用 `series` 和 `series_order`，零散文章无需添加系列。现有分类为 Linux内核、云原生、编程语言、软件工程、工具与自动化、系统环境、硬件实践。
 
-### 分类、标签与系列
+- 正文配图放在文章目录，使用 `![说明](pic.png)`；共用封面放在 `assets/img/covers/`，通过 `image` 引用。
+- `comments: false` 关闭单篇评论，`toc: false` 关闭单篇左侧目录。
+- 发布时间使用 `date`；内容更新时间优先使用显式 `lastmod`，否则取文章最后一次 Git 提交。CI 保留完整 Git 历史，新文章尚未提交时回退到发布时间。
+- 旧分类与标签的 `aliases` 继续保留；取消分页后，原 `/page/<n>/` 等路径跳转到对应完整列表。
 
-每篇文章选择一个分类，按主要讨论的主题归档。故障排查、实践记录和学习思考是文章的写法，不单独作为分类。
+## 音乐、置顶与背景
 
-| 分类 | 内容范围 |
-| --- | --- |
-| Linux内核 | 内核学习、进程与线程、IO 等操作系统机制 |
-| 云原生 | 云原生应用、Kubernetes、容器网络与服务治理 |
-| 编程语言 | 语言特性、宏与类型系统、编程语言学习方法 |
-| 软件工程 | 研发流程、架构设计与工程实践 |
-| 工具与自动化 | 工具使用、SDK 集成与任务自动化 |
-| 系统环境 | Ubuntu、Windows、WSL、磁盘与主机环境配置及排障 |
-| 硬件实践 | 硬件改装、散热与设备使用 |
+修改 `data/blog.json` 的 `playlist` 维护歌单，第一项为默认曲目。文件引用 `static/music/` 中的音频和封面。用户原始 FLAC 留在本机，不纳入博客仓库。
 
-标签用于关联具体技术和主题，通常选 2–5 个；内容较短的文章可以只用一个。技术名统一使用常见写法，例如 `Linux`、`Windows`、`Ubuntu`、`Kubernetes`、`Rust`、`Go`、`eBPF`、`systemd`、`NTFS`，避免大小写混用。学习方法统一用 `学习方法`，研发工作流程统一用 `研发流程`。
+首页置顶使用同一数据文件的 `pinned`，填写文章英文目录名。最新文章仍按发布时间排列。`startedAt` 表示当前 Hugo 博客的运行起点，不表示最早写文章的时间。
 
-标签按文章重点选择，不因为正文提到某项技术就添加标签。`Cilium`、`syn`、`ClipCascade` 等具体技术标签可以保留；版本号只在版本差异或学习基线是文章重点时使用，如 `Linux 0.11`、`Linux 6.18`。
+四张背景与图片许可位于 `static/media/`，默认背景和切换顺序由个人主题维护。明暗与背景选择保存在当前浏览器中。
 
-连续更新的一组文章使用 `series` 串联；现有内核学习系列保持 `aa-kernel-study`。系列不替代主题分类，零散文章无需创建系列。
+## Markdown 导出、评论与发布
 
-旧分类中拆分到多个主题的入口跳转到分类总览；能够直接对应的旧分类和合并后的旧标签保留跳转，兼容已有链接。
+文章页提供“复制 Markdown”和“查看 Markdown 源码”，导出地址仍为 `/posts/<slug>/index.md`。正文不含 frontmatter，单篇相对配图转换为绝对 URL，便于向 CSDN 等平台分发。切换主题不改变原来的导出内容。
 
-### 共用技术封面
+评论使用原仓库的 giscus / GitHub Discussions，配置集中在 `hugo.yaml`。点击“加载评论”后获取评论组件；跨页重新加载对应文章评论，明暗配色会同步。
 
-原 `_pphome/blog/icon/` 的封面统一保存在 `assets/img/covers/`。文章可以引用同一张封面，无需在每个文章目录重复保存：
+全文订阅地址仍为 `/index.xml`，文章、分类、标签和系列的订阅入口也保留。分享元信息同时包含标题、摘要和封面，连续导航后同步更新。
 
-```yaml
-image: img/covers/rust.jpg
-```
+推送到博客仓库自己的 `main` 分支会触发 GitHub Pages 部署。主题迁移先在 `codex/theme-migration` 分支完成本地验收，发布按当次授权执行。
 
-常用封面包括 `go.png`、`rust.jpg`、`k8s.png`、`cilium.jpg`、`nvidia.jpg`、`Linux.webp`、`linux_windows.jpg`、`feishu.jpg` 和 `Python.png`。优先使用横向图片作封面；方形徽标和小尺寸图标也保留在同一目录。文件名区分大小写。
+## 来源与回退
 
-当前内核学习、进程与线程、IO 模型文章使用 `image: img/covers/Linux.webp`。各篇文章的封面以 frontmatter 中的 `image` 设置为准。
+个人主题借用与适配的 Stack 改造部分保留 GPL-3.0-only 许可，见 `themes/songminghe/LICENSE` 和主题中的来源说明。APlayer、Reimu 与 Swup 保留各自 MIT 许可；摄影背景按独立 Unsplash 许可记录。文章与用户音乐不纳入主题代码许可声明。
 
-`layouts/_partials/helper/image.html` 在文章目录中找不到图片时，会从 `assets/` 查找共用资源，因此封面仍能生成响应式图片，并适配 GitHub Pages 的 `/SongMingHe/` 路径。
-
-### 旧博客合并
-
-`_pphome/blog/` 的 8 篇旧文已合并到 `content/posts/`，涵盖飞书 Go SDK、Rust 过程宏、WSL、ClipCascade、Cilium、Kubernetes 升级和 Tesla T10 散热改装。正文配图存放在各自的文章目录中，旧的图片外链和 `/assets/` 路径已改为相对引用。
-
-旧文没有声明发布时间；这批文章的 `date` 暂用旧目录首次进入 Git 的时间 `2026-04-14T15:18:15+08:00`。正文中的技术版本和操作记录按旧稿保留。
-
-## 发布
-
-推送到 `main` 分支后，GitHub Actions 自动构建并发布到 GitHub Pages，约 1 分钟生效。
-
-## 同步到 CSDN 等平台
-
-每篇文章底部有「复制 Markdown」按钮，点击后剪贴板中是去掉 frontmatter 的正文，图片已改写为绝对 URL，可直接粘贴到 CSDN、掘金等平台的 Markdown 编辑器。也可以访问 `/posts/<slug>/index.md` 直接查看源文件。
-
-## 评论
-
-评论基于 [giscus](https://giscus.app)（GitHub Discussions），使用 Stack 主题内置的 giscus 支持，配置在 `hugo.yaml` 的 `params.comments.giscus` 下，数据存放在本仓库的 Discussions 中。切换暗色模式时评论区配色会跟随。
-
-## 升级主题
-
-```bash
-git submodule update --remote --merge themes/hugo-theme-stack
-```
-
-升级后请对照主题的 `layouts/_partials/article/components/footer.html` 检查本仓库的同名覆盖文件是否需要同步。
-
-同时检查 `layouts/_partials/helper/image.html`，保留共用封面的资源查找逻辑。
+原版基线为 `270b88a`。回退应恢复完整主题迁移提交，包括配置和旧覆盖模板；仅将 `theme` 改回 Stack 不足以恢复原版。已有文章与音乐原始文件在此次迁移中保持不变。

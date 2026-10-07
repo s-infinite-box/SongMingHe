@@ -1,0 +1,27 @@
+{{ $posts := where site.RegularPages "Section" "posts" }}{{ $words := 0 }}{{ range $posts }}{{ $words = add $words .WordCount }}{{ end }}
+{{ $latest := index ($posts.ByLastmod.Reverse) 0 }}
+<aside class="sidebar" id="sidebar">
+  <header class="profile">
+    <a class="profile-avatar" href="{{ "" | relURL }}"><img src="{{ (resources.Get "img/avatar.jpg").RelPermalink }}" alt="宋明河的头像" width="58" height="58"></a>
+    <div class="profile-meta"><p class="profile-eyebrow">记录 · 实践 · 思考</p><strong><a href="{{ "" | relURL }}">宋明河</a></strong><p class="profile-description">后端开发 / Linux / 云原生</p></div>
+  </header>
+  <div class="socials">{{ range site.Menus.social }}
+    <a href="{{ .URL }}"{{ if .Params.newTab }} target="_blank" rel="noopener"{{ end }} title="{{ .Name }}" aria-label="{{ .Name }}">{{ (resources.Get (printf "icons/social/%s.svg" .Params.icon)).Content | safeHTML }}</a>
+  {{ end }}</div>
+  {{ $hasToc := and (eq .Section "posts") site.Params.article.toc (ne .Params.toc false) (strings.Contains .TableOfContents "<a ") }}
+  <section id="sidebar-toc" class="sidebar-toc" aria-label="文章目录"{{ if not $hasToc }} hidden{{ end }}>
+    {{ if $hasToc }}<div class="toc-heading">文章目录<span id="reading-percent">0%</span></div><div class="reading-line"><span id="reading-progress"></span></div>{{ .TableOfContents }}<a class="back-top" href="#">↑ 回到顶部</a>{{ end }}
+  </section>
+  <nav class="main-nav" aria-label="主导航">
+    {{ range site.Menus.main }}<a href="{{ .URL | relURL }}" data-nav="{{ .URL | relURL }}">{{ (resources.Get (printf "icons/navigation/%s.svg" .Params.icon)).Content | safeHTML }}<span>{{ .Name }}</span></a>{{ end }}
+  </nav>
+  {{ partial "player.html" . }}
+  <details class="sidebar-group" id="sidebar-categories"><summary>分类<span>{{ len site.Taxonomies.categories }}</span></summary><div class="sidebar-preview category-list">{{ range site.Taxonomies.categories.Alphabetical }}<a href="{{ .Page.RelPermalink }}"><span>{{ .Page.LinkTitle }}</span><small>{{ .Count }}</small></a>{{ end }}</div><a class="sidebar-more" hidden href="{{ "categories/" | relURL }}">查看全部分类 ↗</a></details>
+  <details class="sidebar-group" id="sidebar-tags"><summary>标签<span>{{ len site.Taxonomies.tags }}</span></summary><div class="sidebar-preview tag-cloud">{{ range site.Taxonomies.tags.ByCount }}<a href="{{ .Page.RelPermalink }}">{{ .Page.LinkTitle }}</a>{{ end }}</div><a class="sidebar-more" hidden href="{{ "tags/" | relURL }}">查看全部标签 ↗</a></details>
+  <details class="sidebar-group" id="sidebar-archives"><summary>归档<span>{{ len $posts }} 篇</span></summary><div class="sidebar-preview category-list">{{ range $posts.GroupByDate "2006" }}<a href="{{ "archives/" | relURL }}#year-{{ .Key }}"><span>{{ .Key }} 年</span><small>{{ len .Pages }}</small></a>{{ end }}</div><a class="sidebar-more" href="{{ "archives/" | relURL }}" hidden>查看全部归档 ↗</a></details>
+  <section class="sidebar-section site-stats"><div class="section-heading">站点信息</div><dl><div><dt>文章</dt><dd>{{ len $posts }} 篇</dd></div><div><dt>总字数</dt><dd>{{ lang.FormatNumber 0 $words }}</dd></div><div><dt>运行时间</dt><dd id="site-age">—</dd></div><div><dt>内容更新</dt><dd>{{ $latest.Lastmod.Format "2006.01.02" }}</dd></div></dl></section>
+  <div class="sidebar-appearance">
+    <button id="theme-toggle" type="button" aria-label="切换明暗配色" aria-pressed="false">{{ (resources.Get "icons/navigation/toggle-left.svg").Content | safeHTML }}<span>明暗配色</span></button>
+    <button id="background-toggle" type="button" aria-label="切换页面背景">{{ (resources.Get "icons/navigation/photo.svg").Content | safeHTML }}<span>切换背景</span></button>
+  </div>
+</aside>

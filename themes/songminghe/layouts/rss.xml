@@ -1,0 +1,20 @@
+{{/* 全文 RSS 保留文章订阅地址，不混入关于、搜索和最新文章等独立页面。 */}}
+{{ $pages := where site.RegularPages "Section" "posts" }}
+{{ if eq .Kind "taxonomy" }}
+  {{ $pages = first 0 site.RegularPages }}{{ range .Pages }}{{ $pages = union $pages .RegularPages }}{{ end }}
+  {{ $pages = where $pages "Section" "posts" }}
+{{ else if not .IsHome }}{{ $pages = where .RegularPagesRecursive "Section" "posts" }}{{ end }}
+{{ $pages = $pages.ByDate.Reverse }}
+{{ printf "<?xml version=\"1.0\" encoding=\"utf-8\"?>" | safeHTML }}
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>
+<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
+<link>{{ .Permalink }}</link><description>{{ site.Params.description }}</description><language>zh-CN</language><generator>Hugo</generator>
+{{ with .OutputFormats.Get "RSS" }}<atom:link href="{{ .Permalink }}" rel="self" type="application/rss+xml"/>{{ end }}
+{{ with $pages.ByLastmod.Reverse }}<lastBuildDate>{{ (index . 0).Lastmod.Format "Mon, 02 Jan 2006 15:04:05 -0700" }}</lastBuildDate>{{ end }}
+{{ range $pages }}<item><title>{{ .Title }}</title><link>{{ .Permalink }}</link><guid>{{ .Permalink }}</guid><pubDate>{{ .PublishDate.Format "Mon, 02 Jan 2006 15:04:05 -0700" }}</pubDate>
+{{ $content := .Summary }}{{ if site.Params.rssFullContent }}{{ $content = .Content }}{{ end }}
+{{ with partial "cover.html" . }}{{ $content = printf "<img src=\"%s\" alt=\"封面\">%s" (. | absURL) $content }}{{ end }}
+{{/* 订阅器离开本站阅读时，相对配图也必须指向原文章。 */}}
+{{ $content = replaceRE `(<img[^>]*\ssrc=["'])(?:\./)?([^"':/][^"':]*)(["'])` (printf "${1}%s${2}${3}" .Permalink) $content }}
+<description>{{ $content | transform.XMLEscape | safeHTML }}</description></item>{{ end }}
+</channel></rss>

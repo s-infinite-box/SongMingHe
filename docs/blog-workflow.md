@@ -4,6 +4,8 @@
 
 正文统一在博客仓库维护，各平台使用导出的分发稿。当前采用**仓库文档加 README 入口**的方式保存流程；后续若需要自然语言触发自动操作，再用一个轻量 skill 读取本文和仓库配置，调用已有命令。
 
+2026-10-07 起站点接入个人主题 `songminghe`，写作、分类、封面和 Markdown 分发规则沿用。新增 `make check` 进行构建兼容检查；歌单、首页置顶和运行起点集中在 `data/blog.json`，默认 No Worries、亮色海岸背景。迁移与回退细节见 [个人主题迁移](theme-migration.md)。
+
 ## 仓库入口与日常步骤
 
 博客仓库位于 `/home/wz/p/pphome/_sub_mod/SongMingHe`，是 `pphome` 的 Git 子模块。站点地址为 [宋明河](https://s-infinite-box.github.io/SongMingHe/)，正式发布分支是博客仓库自己的 `main`。
@@ -66,7 +68,7 @@ draft: true
 
 封面集中放在 `assets/img/covers/`，在 frontmatter 中写 `image: img/covers/<文件名>`；正文照片和截图放在文章目录中，使用 `![说明](pic.png)` 引用。文件名区分大小写，引用共用封面时不加 `assets/` 前缀。
 
-共用封面由 [`layouts/_partials/helper/image.html`](../layouts/_partials/helper/image.html) 处理：先查找文章目录中的资源，再查找 `assets/`。可处理的位图会由主题生成响应式图片；SVG 等资源按其支持的方式输出。构建结果需要保留 GitHub Pages 的 `/SongMingHe/` 路径。
+共用封面由个人主题的 [`cover.html`](../themes/songminghe/layouts/_partials/cover.html) 处理：先查找文章目录中的资源，再查找 `assets/`。可处理的位图会由主题生成适合列表与分享的缩略图；SVG 等资源直接输出。构建结果需要保留 GitHub Pages 的 `/SongMingHe/` 路径。
 
 选择封面时优先检查主体在列表裁剪后是否清楚、标题附近是否拥挤、图片尺寸是否足够。当前内核学习、IO 模型、进程线程文章引用 `Linux.webp`，Kubernetes 升级文章引用 `k8s-flower.svg`。这些是本次选图结果，各篇文章以作者最终设置的 `image` 为准。
 

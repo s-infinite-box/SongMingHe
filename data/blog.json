@@ -1,0 +1,63 @@
+{
+  "startedAt": "2026-09-06T18:50:16+08:00",
+  "pinned": [
+    "aa-kernel-learning-method"
+  ],
+  "playlist": [
+    {
+      "title": "No Worries",
+      "artist": "Peder B. Helland",
+      "cover": "music/no-worries-cover.jpg",
+      "sources": [
+        {
+          "src": "music/no-worries.m4a",
+          "type": "audio/mp4"
+        }
+      ]
+    },
+    {
+      "title": "The Creek",
+      "artist": "Peder B. Helland",
+      "cover": "music/the-creek-cover.jpg",
+      "sources": [
+        {
+          "src": "music/the-creek.m4a",
+          "type": "audio/mp4"
+        }
+      ]
+    },
+    {
+      "title": "隐山",
+      "artist": "黄力氧",
+      "cover": "music/yinshan-cover.jpg",
+      "sources": [
+        {
+          "src": "music/yinshan.m4a",
+          "type": "audio/mp4"
+        }
+      ]
+    },
+    {
+      "title": "Wish",
+      "artist": "S.E.N.S. (神思者)",
+      "cover": "music/wish-cover.jpg",
+      "sources": [
+        {
+          "src": "music/wish.m4a",
+          "type": "audio/mp4"
+        }
+      ]
+    },
+    {
+      "title": "The Campfire",
+      "artist": "Peder B. Helland",
+      "cover": "music/the-campfire-cover.jpg",
+      "sources": [
+        {
+          "src": "music/the-campfire.m4a",
+          "type": "audio/mp4"
+        }
+      ]
+    }
+  ]
+}

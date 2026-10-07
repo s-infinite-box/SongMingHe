@@ -1,0 +1,5 @@
+name = "宋明河个人主题"
+license = "GPL-3.0-only"
+licenselink = "https://www.gnu.org/licenses/gpl-3.0.html"
+description = "两栏个人博客主题，支持本地歌单和连续导航。"
+min_version = "0.162.0"

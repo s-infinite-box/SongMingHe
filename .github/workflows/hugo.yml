@@ -30,7 +30,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: recursive # 拉取 themes/hugo-theme-stack
+          submodules: recursive # 暂保留旧主题子模块，用于比对和回退
           fetch-depth: 0 # 完整历史，供 .Lastmod 等使用
 
       - name: Install Hugo CLI
@@ -49,6 +49,7 @@ jobs:
           TZ: Asia/Shanghai
         run: |
           hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
+          python3 scripts/verify-build.py
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -1,0 +1,36 @@
+/* 改编自 Reimu 的 assets/css/partials/aplayer.scss，MIT 许可见 vendor/aplayer/。 */
+.sidebar-player{margin:24px 0 0}
+.aplayer{margin:0!important;border-radius:10px!important;background:var(--card)!important;transition:box-shadow .3s;font-family:inherit!important;box-shadow:none!important;border:1px solid var(--line);color:var(--ink);overflow:hidden}
+.aplayer:hover{box-shadow:var(--shadow)!important}
+.aplayer button:hover path,.aplayer .aplayer-icon:hover path{fill:var(--accent)!important}
+.aplayer.aplayer-withlist .aplayer-info{transition:background .3s;border-bottom:1px solid var(--line)!important}
+.aplayer-title,.aplayer-list-title,.aplayer-music{color:var(--accent)!important}
+.aplayer-list ol li{transition:background .3s;border-top:1px solid var(--line)!important;cursor:pointer!important}
+.aplayer-list ol li:hover,.aplayer-list ol li.aplayer-list-light{background:var(--tag)!important}
+.aplayer-lrc::before,.aplayer-lrc::after{background:none!important}
+.aplayer-lrc-contents,.aplayer-music{cursor:default!important}
+.aplayer-pic,.aplayer .aplayer-bar-wrap,.aplayer-list-cur,.aplayer-list-index,.aplayer-list-author,.aplayer .aplayer-volume-wrap,.aplayer-thumb,.aplayer-icon{cursor:pointer!important}
+.aplayer-author,.aplayer-lrc p,.aplayer-list-author{color:var(--muted)!important}
+.aplayer .aplayer-info{padding:7px 9px 6px 10px}
+.aplayer .aplayer-info .aplayer-music{height:18px;padding-bottom:0;font-size:12px;line-height:18px;white-space:nowrap;text-overflow:ellipsis;margin-bottom:3px}
+.aplayer .aplayer-info .aplayer-music .aplayer-title{font-size:12px}
+.aplayer .aplayer-info .aplayer-music .aplayer-author{display:inline;font-size:10px;margin-left:5px;line-height:1.4}
+.aplayer .aplayer-info .aplayer-controller .aplayer-time{font-size:9px}
+.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap{margin-right:0}
+.aplayer .aplayer-info .aplayer-controller{display:flex;flex-wrap:wrap;align-items:center}
+.aplayer .aplayer-info .aplayer-controller .aplayer-bar-wrap{width:100%;height:12px;padding:0}
+.aplayer .aplayer-info .aplayer-controller .aplayer-time{position:static;display:flex;align-items:center;justify-content:flex-end;width:100%;height:auto;line-height:18px;text-align:right;margin-top:1px;gap:0}
+.aplayer .aplayer-time-inner{white-space:nowrap;flex-shrink:0}
+.aplayer .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon-menu{display:inline-block!important}
+.aplayer .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon{margin-left:1px;width:13px;height:13px}
+.aplayer.aplayer-withlist .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon-order,.aplayer.aplayer-withlist .aplayer-info .aplayer-controller .aplayer-time .aplayer-icon-loop{display:inline-block}
+.aplayer .aplayer-list ol li{font-size:11px;padding:0 10px}
+.aplayer .aplayer-list ol li .aplayer-list-author{display:none}
+.aplayer .aplayer-list ol li .aplayer-list-index{margin-right:7px}
+.aplayer .aplayer-pic{height:66px;width:52px;background-size:cover}
+.aplayer .aplayer-info{height:66px;margin-left:52px}
+.aplayer .aplayer-list ol li .aplayer-list-cur{left:0;background:var(--accent)!important}
+.aplayer .aplayer-bar .aplayer-played{background:var(--accent)!important}
+.aplayer .aplayer-bar .aplayer-played .aplayer-thumb{background:var(--accent)!important}
+.aplayer .aplayer-info .aplayer-controller .aplayer-volume-wrap .aplayer-volume-bar-wrap .aplayer-volume-bar{background:var(--card)}
+.aplayer .aplayer-info .aplayer-controller .aplayer-volume-wrap .aplayer-volume-bar-wrap{z-index:3}

@@ -1,0 +1,6 @@
+{{ with site.Params.comments.giscus }}{{ $config := dict
+  "repo" .repo "repo-id" .repoID "category" .category "category-id" .categoryID
+  "mapping" .mapping "strict" (string .strict) "reactions-enabled" (string .reactionsEnabled)
+  "emit-metadata" (string .emitMetadata) "input-position" .inputPosition
+  "lang" .lang "loading" .loading "lightTheme" .lightTheme "darkTheme" .darkTheme
+}}<script id="giscus-config" type="application/json">{{ $config | jsonify | safeJS }}</script>{{ end }}

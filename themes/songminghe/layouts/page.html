@@ -1,0 +1,11 @@
+{{ define "main" }}
+{{ if eq .Section "posts" }}
+<div class="article-layout"><article class="article-panel" data-current-article="{{ .RelPermalink }}"><header class="article-header"><div class="article-toolbar"><a class="article-back" href="{{ "" | relURL }}" data-article-back>{{ partial "icon.html" "back" }}<span>返回</span></a><div class="post-meta">{{ range .GetTerms "categories" }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}<span class="meta-dot">·</span><time>{{ .Date.Format "2006.01.02" }}</time></div></div><h1>{{ .Title }}</h1><div class="article-details"><span>{{ lang.FormatNumber 0 .WordCount }} 字</span><span>{{ .ReadingTime }} 分钟阅读</span><span>更新于 {{ .Lastmod.Format "2006.01.02" }}</span></div>{{ with .Description }}<p class="article-intro">{{ . }}</p>{{ end }}<div class="post-tags">{{ range .GetTerms "tags" }}<a href="{{ .RelPermalink }}"># {{ .LinkTitle }}</a>{{ end }}</div></header>
+{{ $article := . }}{{ with .GetTerms "series" }}<div class="article-series"><span>系列：</span>{{ range . }}<a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}{{ with $article.Params.series_order }}<span>第 {{ . }} 篇</span>{{ end }}</div>{{ end }}
+<div class="article-content">{{ .Content }}</div>
+{{ with .OutputFormats.Get "markdown" }}<div class="markdown-tools"><button class="outline-button" data-copy-markdown="{{ .RelPermalink }}">复制 Markdown</button><a href="{{ .RelPermalink }}" target="_blank" rel="noopener">查看 Markdown 源码 ↗</a></div>{{ end }}
+<div class="article-pagination">{{ with .PrevInSection }}<a href="{{ .RelPermalink }}"><small>上一篇</small><span>{{ .Title }}</span></a>{{ end }}{{ with .NextInSection }}<a href="{{ .RelPermalink }}"><small>下一篇</small><span>{{ .Title }}</span></a>{{ end }}</div>
+{{ if and site.Params.comments.enabled (ne .Params.comments false) }}<section class="comments-section"><h2>讨论</h2>{{ partial "giscus-config.html" . }}<div class="giscus" id="comments" data-path="{{ .RelPermalink }}"><button class="outline-button" data-load-comments>加载评论</button></div></section>{{ end }}</article>
+</div>
+{{ else }}<article class="article-panel simple-page"><header class="page-heading"><h1>{{ .Title }}</h1></header><div class="article-content">{{ .Content }}</div></article>{{ end }}
+{{ end }}

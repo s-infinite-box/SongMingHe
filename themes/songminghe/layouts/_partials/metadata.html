@@ -1,0 +1,28 @@
+{{/* 初次加载与连续导航共用同一份页面元信息。 */}}
+{{ $title := site.Title }}{{ if not .IsHome }}{{ $title = printf "%s · %s" .Title site.Title }}{{ end }}
+{{ $description := site.Params.description }}{{ with .Description }}{{ $description = . }}{{ else }}{{ with .Summary }}{{ $description = . | plainify | htmlUnescape | truncate 160 }}{{ end }}{{ end }}
+{{ $canonical := .Permalink }}{{ with .Params.canonicalUrl }}{{ $canonical = . }}{{ end }}
+{{ $kind := "website" }}{{ if eq .Section "posts" }}{{ if .IsPage }}{{ $kind = "article" }}{{ end }}{{ end }}
+{{ $image := partial "cover.html" . }}{{ if not $image }}{{ $image = (resources.Get "img/avatar.jpg").RelPermalink }}{{ end }}
+{{ $metas := slice
+  (dict "attribute" "name" "key" "description" "content" $description)
+  (dict "attribute" "property" "key" "og:title" "content" $title)
+  (dict "attribute" "property" "key" "og:description" "content" $description)
+  (dict "attribute" "property" "key" "og:url" "content" $canonical)
+  (dict "attribute" "property" "key" "og:site_name" "content" site.Title)
+  (dict "attribute" "property" "key" "og:type" "content" $kind)
+  (dict "attribute" "property" "key" "og:locale" "content" "zh_CN")
+  (dict "attribute" "property" "key" "og:image" "content" ($image | absURL))
+  (dict "attribute" "name" "key" "twitter:card" "content" "summary_large_image")
+  (dict "attribute" "name" "key" "twitter:title" "content" $title)
+  (dict "attribute" "name" "key" "twitter:description" "content" $description)
+  (dict "attribute" "name" "key" "twitter:image" "content" ($image | absURL))
+}}
+{{ with .Params.keywords }}{{ $metas = $metas | append (dict "attribute" "name" "key" "keywords" "content" (delimit . ", ")) }}{{ end }}
+{{ if eq $kind "article" }}
+  {{ $metas = $metas | append (dict "attribute" "property" "key" "article:section" "content" .Section) }}
+  {{ range .Params.tags }}{{ $metas = $metas | append (dict "attribute" "property" "key" "article:tag" "content" .) }}{{ end }}
+  {{ if not .Date.IsZero }}{{ $metas = $metas | append (dict "attribute" "property" "key" "article:published_time" "content" (.Date.Format "2006-01-02T15:04:05-07:00")) }}{{ end }}
+  {{ if not .Lastmod.IsZero }}{{ $metas = $metas | append (dict "attribute" "property" "key" "article:modified_time" "content" (.Lastmod.Format "2006-01-02T15:04:05-07:00")) }}{{ end }}
+{{ end }}
+{{ return (dict "title" $title "canonical" $canonical "metas" $metas) }}

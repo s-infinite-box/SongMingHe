@@ -1,41 +1,32 @@
-# Hugo 站点配置
-# 文档：https://gohugo.io/getting-started/configuration/
-# 主题：https://stack.jimmycai.com/config/
-
+# 宋明河个人博客；文章和配图仍由原仓库维护。
 baseURL: https://s-infinite-box.github.io/SongMingHe/
 title: 宋明河
-theme: hugo-theme-stack
-
-# 语言：语言键用 zh 以匹配 Stack 的 i18n/zh.toml
+theme: songminghe
 defaultContentLanguage: zh
 languages:
   zh:
     label: 简体中文
     locale: zh-CN
     weight: 1
-hasCJKLanguage: true # 按中文方式统计字数与阅读时长
+hasCJKLanguage: true
 timeZone: Asia/Shanghai
-
 enableRobotsTXT: true
 enableEmoji: true
-capitalizeListTitles: false # 标签/分类页标题保持原样，不自动首字母大写
+capitalizeListTitles: false
 buildDrafts: false
 buildFuture: false
 
-pagination:
-  pagerSize: 6
+# 显式更新时间优先，其次使用文章最后一次 Git 提交。
+enableGitInfo: true
+frontmatter:
+  lastmod: [lastmod, ':git', date, publishDate]
 
-# 分类法：分类、标签，以及可持续更新的文章系列
 taxonomies:
   category: categories
   tag: tags
   series: series
-
-# URL 结构：文章 /posts/<目录名>/，独立页面（归档、搜索、关于）直接挂在根路径下
 permalinks:
   page: /:slug/
-
-# 输出格式：文章页额外输出 Markdown（/posts/<slug>/index.md），供"复制 Markdown"按钮读取
 outputFormats:
   markdown:
     mediaType: text/markdown
@@ -43,12 +34,12 @@ outputFormats:
     isPlainText: true
     notAlternative: true
 outputs:
+  home: [HTML, RSS]
   page: [HTML, markdown]
-
 markup:
   goldmark:
     renderer:
-      unsafe: true # 允许在 Markdown 中直接写 HTML
+      unsafe: true
   highlight:
     noClasses: false
     codeFences: true
@@ -57,108 +48,66 @@ markup:
     lineNumbersInTable: true
     tabWidth: 4
   tableOfContents:
-    startLevel: 2
+    startLevel: 1
     endLevel: 4
-    ordered: true
+    ordered: false
 
-# 左侧栏菜单：主页 / 归档 / 搜索 / 关于 由各页面 frontmatter 中的 menu.main 声明
-# 这里只放不对应具体页面的入口
 menu:
   main:
-    - identifier: posts
-      name: 文章
-      url: /posts/
-      weight: -80
-      params:
-        icon: archives
-    - identifier: csdn
-      name: CSDN
-      url: https://blog.csdn.net/2501_90571811?type=blog
-      weight: 10
-      params:
-        icon: link
-        newTab: true
-    - identifier: zhihu
-      name: 知乎
-      url: https://www.zhihu.com/people/yu-luo-chuang-tai-13/posts
-      weight: 20
-      params:
-        icon: link
-        newTab: true
+    - identifier: home
+      name: 首页
+      url: /
+      weight: 1
+      params: {icon: home}
+    - identifier: latest
+      name: 最新文章
+      url: /latest/
+      weight: 2
+      params: {icon: clock}
+    - identifier: archives
+      name: 归档
+      url: /archives/
+      weight: 3
+      params: {icon: archives}
+    - identifier: search
+      name: 搜索
+      url: /search/
+      weight: 4
+      params: {icon: search}
+    - identifier: about
+      name: 关于
+      url: /about/
+      weight: 5
+      params: {icon: user}
   social:
     - identifier: github
       name: GitHub
       url: https://github.com/s-infinite-box
-      params:
-        icon: brand-github
-        newTab: true
+      weight: 1
+      params: {icon: github, newTab: true}
     - identifier: email
       name: 邮箱
       url: mailto:mh.song@hotmail.com
-      params:
-        icon: mail
+      weight: 2
+      params: {icon: mail}
+    - identifier: csdn
+      name: CSDN
+      url: https://blog.csdn.net/2501_90571811?type=blog
+      weight: 3
+      params: {icon: csdn, newTab: true}
+    - identifier: zhihu
+      name: 知乎
+      url: https://www.zhihu.com/people/yu-luo-chuang-tai-13/posts
+      weight: 4
+      params: {icon: zhihu, newTab: true}
 
 params:
   mainSections: [posts]
+  description: 技术实践、学习记录与日常思考
   rssFullContent: true
   favicon: img/avatar-favicon-round.ico
-
-  footer:
-    since: 2024
-    customText: ""
-
-  dateFormat:
-    published: "2006-01-02"
-    lastUpdated: "2006-01-02 15:04"
-
-  sidebar:
-    compact: false
-    emoji: ""
-    subtitle: 您好！欢迎来到我的博客
-    avatar: img/avatar.jpg
-
   article:
-    headingAnchor: false
-    math: false
     toc: true
-    readingTime: true
-    list:
-      showTags: true
-    license:
-      enabled: false
-
-  # 右侧栏小组件：首页与文章页
-  widgets:
-    homepage:
-      - type: search
-      - type: archives
-        params:
-          limit: 5
-      - type: categories
-        params:
-          limit: 10
-      - type: tag-cloud
-        params:
-          limit: 20
-    page:
-      - type: toc
-
-  colorScheme:
-    toggle: true # 左侧栏底部"暗色模式"开关
-    default: light
-
-  imageProcessing:
-    autoOrient: false
-    content:
-      enabled: true
-    thumbnail:
-      enabled: true
-
-  cookies:
-    enabled: false
-
-  # 评论：giscus（GitHub Discussions），配置生成自 https://giscus.app
-  # 主题内置了配色联动：切换暗色模式时会通知 giscus iframe
   comments:
     enabled: true
     provider: giscus
@@ -176,8 +125,3 @@ params:
       darkTheme: dark
       lang: zh-CN
       loading: lazy
-
-  opengraph:
-    twitter:
-      site: ""
-      card: summary_large_image
