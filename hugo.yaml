@@ -145,7 +145,7 @@ params:
 
   colorScheme:
     toggle: true # 左侧栏底部"暗色模式"开关
-    default: dark
+    default: light
 
   imageProcessing:
     autoOrient: false
