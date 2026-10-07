@@ -3,4 +3,6 @@
 {{ range $metadata.metas }}{{ if eq .attribute "name" }}<meta data-page-meta name="{{ .key }}" content="{{ .content }}">{{ else }}<meta data-page-meta property="{{ .key }}" content="{{ .content }}">{{ end }}{{ end }}
 <link rel="icon" href="{{ (resources.Get site.Params.favicon).RelPermalink }}"><link rel="alternate" type="application/rss+xml" title="{{ site.Title }}" href="{{ "index.xml" | absURL }}">
 <link rel="stylesheet" href="{{ "vendor/aplayer/APlayer.min.css" | relURL }}"><link rel="stylesheet" href="{{ "css/theme.css" | relURL }}"><link rel="stylesheet" href="{{ "css/stack-layout.css" | relURL }}"><link rel="stylesheet" href="{{ "css/reimu-player.css" | relURL }}"><link rel="stylesheet" href="{{ "css/syntax.css" | relURL }}">
-<script src="{{ "js/swup.min.js" | relURL }}" defer></script><script src="{{ "vendor/aplayer/APlayer.min.js" | relURL }}" defer></script><script src="{{ "js/theme.js" | relURL }}" defer></script>
+{{/* 内容摘要随主题脚本变化，避免旧脚本缓存延迟生效。 */}}
+{{ $themeVersion := crypto.SHA256 (os.ReadFile "themes/songminghe/static/js/theme.js") }}
+<script src="{{ "js/swup.min.js" | relURL }}" defer></script><script src="{{ "vendor/aplayer/APlayer.min.js" | relURL }}" defer></script><script src="{{ "js/theme.js" | relURL }}?v={{ $themeVersion }}" defer></script>
