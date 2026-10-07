@@ -157,15 +157,25 @@
     if (!input) return;
     const entries = JSON.parse(document.querySelector('#search-data').textContent);
     const index = new Map(entries.map(item => [item.url, item.text.toLowerCase()]));
-    input.addEventListener('input', () => {
+    function filter() {
       const terms = input.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
       let count = 0;
       document.querySelectorAll('#search-results .post-card').forEach(node => {
-        node.hidden = !terms.every(term => index.get(node.dataset.articleUrl).includes(term));
+        node.hidden = !terms.every(term => (index.get(node.dataset.articleUrl) || '').includes(term));
         if (!node.hidden) count++;
       });
       document.querySelector('#search-count').textContent = `${count} 篇`;
       document.querySelector('#search-empty').hidden = count > 0;
+    }
+    input.value = new URL(location.href).searchParams.get('q') || '';
+    filter();
+    input.addEventListener('input', () => {
+      const url = new URL(location.href);
+      if (input.value) url.searchParams.set('q', input.value); else url.searchParams.delete('q');
+      // 保留 Swup 的索引与来源，每次输入只修改当前历史记录。
+      const current = url.pathname + url.search + url.hash;
+      history.replaceState({...history.state, url: current}, '', current);
+      filter();
     }, {signal});
   }
   function setupDirectory(signal) {

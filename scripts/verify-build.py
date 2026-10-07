@@ -31,6 +31,8 @@ class Page(HTMLParser):
         self.in_giscus = False
         self.giscus = ''
         self.article_depth = 0
+        self.taxonomy_depth = 0
+        self.taxonomies = {'categories': False, 'tags': False}
         self.article_text = ''
         self.text = ''
         self.feed_nodes = []
@@ -59,6 +61,14 @@ class Page(HTMLParser):
                 self.article_depth += 1
             elif 'article-content' in attrs.get('class', '').split():
                 self.article_depth = 1
+            if self.taxonomy_depth:
+                self.taxonomy_depth += 1
+            elif {'post-meta', 'post-tags'} & set(attrs.get('class', '').split()):
+                self.taxonomy_depth = 1
+        if tag == 'a' and self.taxonomy_depth:
+            for name in self.taxonomies:
+                if f'/{name}/' in urlparse(attrs.get('href', '')).path:
+                    self.taxonomies[name] = True
         if tag == 'link' and attrs.get('type') == 'application/rss+xml':
             self.feed_nodes.append(attrs.get('href'))
 
@@ -68,6 +78,8 @@ class Page(HTMLParser):
             self.in_giscus = False
         if tag == 'div' and self.article_depth:
             self.article_depth -= 1
+        if tag == 'div' and self.taxonomy_depth:
+            self.taxonomy_depth -= 1
 
     def handle_data(self, data):
         self.text += data
@@ -147,6 +159,7 @@ def main():
             local_target(url, urljoin(base, str(css.relative_to(output))))
 
     posts = []
+    taxonomy_posts = {'categories': set(), 'tags': set()}
     for entry in published_posts(manifest):
         source = repo / entry['path']
         text = source.read_text()
@@ -154,6 +167,10 @@ def main():
         relative = unquote(urlparse(entry['permalink']).path[len(base_path):]) + 'index.html'
         posts.append(entry['permalink'])
         check(relative in html_pages, f'文章页遗漏：{relative}')
+        if relative in html_pages:
+            for name, present in html_pages[relative].taxonomies.items():
+                if present:
+                    taxonomy_posts[name].add(entry['permalink'])
         exported = output / relative.replace('.html', '.md')
         check(exported.is_file(), f'Markdown 导出遗漏：{relative}')
         if exported.is_file():
@@ -175,8 +192,12 @@ def main():
     for item in items:
         relative = unquote(urlparse(item.findtext('link')).path[len(base_path):]) + 'index.html'
         rendered = re.sub(r'\s+', '', html_pages[relative].article_text)
-        subscribed = re.sub(r'\s+', '', Page(item.findtext('description', '')).text)
+        description = Page(item.findtext('description', ''))
+        subscribed = re.sub(r'\s+', '', description.text)
         check(bool(rendered) and rendered in subscribed, f'RSS 未输出完整正文：{item.findtext("link")}')
+        for tag, url in description.links:
+            if tag in ('a', 'img', 'source'):
+                check(bool(urlparse(url).scheme), f'RSS 正文仍有相对地址：{item.findtext("link")}：{url}')
         if html_pages[relative].giscus:
             config = json.loads(html_pages[relative].giscus)
             check(all(config.get(key) for key in ['repo', 'repo-id', 'category', 'category-id', 'mapping', 'lightTheme', 'darkTheme']), f'评论配置缺失：{relative}')
@@ -184,7 +205,9 @@ def main():
             check(config.get('mapping') == 'specific' and config.get('term') == 'SongMingHe/' + relative.removesuffix('index.html'), f'旧评论检索词发生变化：{relative}')
     for path in ['posts/index.xml', 'categories/index.xml', 'tags/index.xml']:
         entries = ET.parse(output / path).findall('./channel/item')
-        check({item.findtext('link') for item in entries} == set(posts), f'汇总订阅未覆盖全部文章：{path}')
+        section = path.split('/')[0]
+        expected = taxonomy_posts.get(section, set(posts))
+        check({item.findtext('link') for item in entries} == expected, f'汇总订阅与文章实际归属不一致：{path}')
     index = json.loads((output / 'search/index.json').read_text())
     check({urljoin(base, entry['permalink']) for entry in index} == set(posts), '搜索 JSON 未覆盖全部文章')
     check(all({'title', 'date', 'permalink', 'content'} <= entry.keys() for entry in index), '搜索 JSON 字段不兼容')

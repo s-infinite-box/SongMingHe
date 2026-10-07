@@ -1,0 +1,16 @@
+{{- /* 订阅正文离开本站后，链接与配图仍以原文章为解析基准。 */ -}}
+{{- $content := .content -}}
+{{- $base := urls.Parse .permalink -}}
+{{- range findRE `<(?:a|img|source)\b[^>]*\s(?:href|src)=["'][^"']*["']` $content -}}
+  {{- $tag := . -}}
+  {{- $raw := replaceRE `^[\s\S]*\s(?:href|src)=["']([^"']*)["']$` "$1" $tag -}}
+  {{- $url := urls.Parse (transform.HTMLUnescape $raw) -}}
+  {{- if not $url.IsAbs -}}
+    {{- $resolved := ($base.ResolveReference $url).String | transform.HTMLEscape -}}
+    {{- $attribute := index (findRE `\s(?:href|src)=["'][^"']*["']$` $tag) 0 -}}
+    {{- $name := replaceRE `^\s*(href|src)=[\s\S]*$` "$1" $attribute -}}
+    {{- $updated := replace $tag $attribute (printf " %s=\"%s\"" $name $resolved) -}}
+    {{- $content = replace $content $tag $updated -}}
+  {{- end -}}
+{{- end -}}
+{{- return $content -}}

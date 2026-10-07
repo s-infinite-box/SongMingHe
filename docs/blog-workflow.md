@@ -137,6 +137,8 @@ make               # 正式环境构建
 
 正式发布前运行 `make check`，它包含 Node.js 标准测试模块及 Python 标准库回归测试，不需安装额外依赖。构建和 `hugo list published` 使用相同完整时刻，已发布清单保存在忽略提交的 `.build-published.csv`。需要复现定时发布问题时使用 `make check BUILD_CLOCK=2026-10-08T01:00:00+08:00`，不要另向 `HUGO_FLAGS` 传入不同的 `--clock`。
 
+`make build`、`make check` 面向 `hugo.yaml` 定义的正式已发布内容；`HUGO_FLAGS` 可设置缓存或与配置一致的站点地址，不用于改变草稿、未来、过期过滤，也不用于切换源目录、输出目录、环境或配置。需要查看未来文章时使用 `make serve HUGO_FLAGS=--buildFuture`，需要查看草稿时使用 `make serve-drafts`。
+
 没有 Makefile 的旧检出可以直接运行以下命令；Hugo 版本要求和主题初始化见 [README 本地预览](../README.md#本地预览)。
 
 ```bash
