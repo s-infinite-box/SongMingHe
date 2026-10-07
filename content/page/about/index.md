@@ -19,4 +19,4 @@ menu:
 ## 联系我
 
 - GitHub：[s-infinite-box](https://github.com/s-infinite-box)
-- 邮箱：[MingHe.Song@hotmail.com](mailto:MingHe.Song@hotmail.com)
+- 邮箱：[mh.song@hotmail.com](mailto:mh.song@hotmail.com)

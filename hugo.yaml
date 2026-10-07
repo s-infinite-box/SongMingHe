@@ -71,6 +71,20 @@ menu:
       weight: -80
       params:
         icon: archives
+    - identifier: csdn
+      name: CSDN
+      url: https://blog.csdn.net/2501_90571811?type=blog
+      weight: 10
+      params:
+        icon: link
+        newTab: true
+    - identifier: zhihu
+      name: 知乎
+      url: https://www.zhihu.com/people/yu-luo-chuang-tai-13/posts
+      weight: 20
+      params:
+        icon: link
+        newTab: true
   social:
     - identifier: github
       name: GitHub
@@ -80,7 +94,7 @@ menu:
         newTab: true
     - identifier: email
       name: 邮箱
-      url: mailto:MingHe.Song@hotmail.com
+      url: mailto:mh.song@hotmail.com
       params:
         icon: mail
 
